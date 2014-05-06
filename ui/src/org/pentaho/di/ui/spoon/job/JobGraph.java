@@ -1419,7 +1419,18 @@ public class JobGraph extends AbstractGraph implements XulEventHandler, Redrawab
     if ( e.keyCode == SWT.F1 ) {
       spoon.browseVersionHistory();
     }
-
+    // CTRL-C
+    if ( e.keyCode == 'c' && ( e.stateMask & SWT.MOD1 ) != 0 ) {
+      if ( !Const.isEmpty( spoon.getActiveJob().getSelectedEntries() ) ) {
+        spoon.copyJobentries();
+      } else {
+        spoon.copyJob();
+      }
+    }
+    // CTRL-A
+    if ( e.keyCode == 'a' && ( e.stateMask & SWT.MOD1 ) != 0 ) {
+      spoon.editSelectAll();
+    }
     // CTRL-UP : allignTop();
     if ( e.keyCode == SWT.ARROW_UP && ( e.stateMask & SWT.MOD1 ) != 0 ) {
       alligntop();

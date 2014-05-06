@@ -35,6 +35,8 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -201,6 +203,15 @@ public class LogBrowser {
       }
     } );
     text.setMenu( menu );
+
+    text.addKeyListener( new KeyAdapter() {
+      @Override
+      public void keyPressed( KeyEvent e ) {
+        if ( e.keyCode == 'a' && ( e.stateMask & SWT.MOD1 ) != 0 ) {
+          text.setSelection( 0, text.getCharCount() );
+        }
+      }
+    } );
 
     text.addMouseListener( new MouseAdapter() {
       public void mouseDown( MouseEvent event ) {
