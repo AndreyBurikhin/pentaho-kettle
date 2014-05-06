@@ -322,9 +322,11 @@ public class TableView extends Composite {
     MenuItem miCol1 = new MenuItem( mRow, SWT.NONE );
     miCol1.setText( OsHelper.customizeMenuitemText( BaseMessages.getString(
       PKG, "TableView.menu.OptimalSizeWithHeader" ) ) );
+    miCol1.setAccelerator( SWT.F3 );
     MenuItem miCol2 = new MenuItem( mRow, SWT.NONE );
     miCol2.setText( OsHelper.customizeMenuitemText( BaseMessages.getString(
       PKG, "TableView.menu.OptimalSizeWithoutHeader" ) ) );
+    miCol2.setAccelerator( SWT.F4 );
     new MenuItem( mRow, SWT.SEPARATOR );
     MenuItem miClear = new MenuItem( mRow, SWT.NONE );
     miClear.setText( OsHelper.customizeMenuitemText( BaseMessages.getString( PKG, "TableView.menu.ClearAll" ) ) );

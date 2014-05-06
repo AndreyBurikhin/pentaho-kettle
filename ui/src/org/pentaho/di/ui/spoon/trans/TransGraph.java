@@ -1790,6 +1790,28 @@ public class TransGraph extends AbstractGraph implements XulEventHandler, Redraw
       spoon.editKettlePropertiesFile();
     }
 
+    if ( e.keyCode == SWT.F3 ) {
+      spoon.createDatabaseWizard();
+    }
+
+    if ( e.keyCode == SWT.F4 ) {
+      spoon.copyTableWizard();
+    }
+
+
+    // CTRL-C
+    if ( e.keyCode == 'c' && ( e.stateMask & SWT.MOD1 ) != 0 ) {
+      if ( !Const.isEmpty( spoon.getActiveTransformation().getSelectedSteps() ) ) {
+        spoon.copySteps();
+      } else {
+        spoon.copyTransformation();
+      }
+    }
+    // CTRL-A
+    if ( e.keyCode == 'a' && ( e.stateMask & SWT.MOD1 ) != 0 ) {
+      spoon.editSelectAll();
+    }
+
     // CTRL-UP : allignTop();
     if ( e.keyCode == SWT.ARROW_UP && ( e.stateMask & SWT.MOD1 ) != 0 ) {
       alligntop();
@@ -4245,7 +4267,7 @@ public class TransGraph extends AbstractGraph implements XulEventHandler, Redraw
    * Finds the last active transformation in the running job to the opened transMeta
    *
    * @param transGraph
-   * @param jobEntryCopy
+   * @param stepMeta
    */
   private void attachActiveTrans( TransGraph transGraph, StepMeta stepMeta ) {
     if ( trans != null && transGraph != null ) {
@@ -4262,7 +4284,7 @@ public class TransGraph extends AbstractGraph implements XulEventHandler, Redraw
    * Finds the last active transformation in the running job to the opened transMeta
    *
    * @param transGraph
-   * @param jobEntryCopy
+   * @param stepMeta
    */
   private Trans getActiveSubtransformation( TransGraph transGraph, StepMeta stepMeta ) {
     if ( trans != null && transGraph != null ) {

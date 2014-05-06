@@ -161,9 +161,9 @@
         </menu>
         <menu id="wizard" label="${Spoon.Menu.Wizard}">
           <menupopup id="wizard-popup">
-            <menuitem id="wizard-connection" acceltext="F3" accesskey="f3"
+            <menuitem id="wizard-connection" acceltext="F3 " 
               label="${Spoon.Menu.Wizard.CreateDatabaseConnectionWizard}" command="spoon.createDatabaseWizard()" />
-            <menuitem id="wizard-copy-table" acceltext="F4" accesskey="f4" label="${Spoon.Menu.Wizard.CopyTableWizard}"
+            <menuitem id="wizard-copy-table" acceltext="F4 " label="${Spoon.Menu.Wizard.CopyTableWizard}"
               command="spoon.copyTableWizard()" />
             <menuitem id="wizard-copy-tables" acceltext="CTRL-F10" accesskey="ctrl-f10" label="${Spoon.Menu.Wizard.CopyTables}"
               command="spoon.ripDBWizard()" />
