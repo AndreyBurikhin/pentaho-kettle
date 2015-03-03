@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.pentaho.di.ui.core.PropsUI;
 import org.w3c.dom.Document;
 
 /**
@@ -33,8 +34,6 @@ import org.w3c.dom.Document;
  */
 public class SvgSupport {
   private static final SAXSVGDocumentFactory SVG_FACTORY;
-  /** True if SVG support enabled in applications. */
-  private static boolean svgEnabled = true;
 
   static {
     String parser = XMLResourceDescriptor.getXMLParserClassName();
@@ -42,21 +41,7 @@ public class SvgSupport {
   }
 
   public static boolean isSvgEnabled() {
-    return svgEnabled;
-  }
-
-  /**
-   * Enable SVG support.
-   */
-  public static void enable() {
-    svgEnabled = true;
-  }
-
-  /**
-   * Disable SVG support.
-   */
-  public static void disable() {
-    svgEnabled = false;
+    return PropsUI.getInstance().isSVGEnabled();
   }
 
   /**
