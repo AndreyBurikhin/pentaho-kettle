@@ -331,8 +331,10 @@ public class JobPainter extends BasePainter {
 
       gc.setBackground( EColor.WHITE );
       
-      gc.fillRoundRectangle( areaX + 1, areaY + nameExtent.y, totalWidth, (totalHeight - nameExtent.y), 5, 5 );
-      gc.fillRectangle( areaX + 1, areaY + nameExtent.y, totalWidth, (totalHeight - nameExtent.y) / 2);
+      gc.fillRoundRectangle( areaX, areaY + nameExtent.y, totalWidth, (totalHeight - nameExtent.y), 5, 5 );
+      gc.fillRectangle( areaX, areaY + nameExtent.y, totalWidth, (totalHeight - nameExtent.y) / 2);
+      
+      gc.drawRoundRectangle( areaX, areaY, totalWidth, totalHeight, 5, 5 );
       
       gc.setForeground( EColor.WHITE );
       gc.drawText( trimmedName, areaX + ( totalWidth - nameExtent.x ) / 2 + MINI_ICON_MARGIN, areaY
@@ -397,7 +399,7 @@ public class JobPainter extends BasePainter {
         } else {
           gc.setAlpha( 100 );
         }
-        gc.drawImage( miniIcon, xIcon, yIcon );
+        gc.drawImage( miniIcon, xIcon, yIcon, magnification );
         xIcon += bounds.x + 5;
       }
     }

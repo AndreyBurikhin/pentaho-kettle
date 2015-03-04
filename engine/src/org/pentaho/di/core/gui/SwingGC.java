@@ -287,6 +287,11 @@ public class SwingGC implements GCInterface {
     // gc.drawImage(img, locationX+xOffset, locationY+yOffset, observer);
 
   }
+  
+  @Override
+  public void drawImage( EImage image, int x, int y, float magnification ) {
+    drawImage( image, x, y);
+  }
 
   public void drawPixelatedImage( BufferedImage img, int locationX, int locationY ) {
 

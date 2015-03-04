@@ -33,6 +33,9 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.pentaho.di.core.gui.Point;
+import org.pentaho.di.core.gui.PrimitiveGCInterface.EImage;
 import org.pentaho.di.core.svg.SvgImage;
 
 /**
@@ -135,6 +138,12 @@ public class SwtUniversalImage {
     }
 
     return new Image( device, new ByteArrayInputStream( out.toByteArray() ) );
+  }
+  
+  public Point getImageBounds( EImage image ) {
+    Image img = getAsBitmap( );
+    Rectangle r = img.getBounds();
+    return new Point( r.width, r.height );
   }
 
   /**

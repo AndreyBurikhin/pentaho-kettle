@@ -279,13 +279,13 @@ public class GUIResource {
 
   private Image imageCollapseAll;
 
-  private Image imageStepError;
+  private SwtUniversalImage imageStepError;
 
-  private Image imageCopyHop;
+  private SwtUniversalImage imageCopyHop;
 
-  private Image imageErrorHop;
+  private SwtUniversalImage imageErrorHop;
 
-  private Image imageInfoHop;
+  private SwtUniversalImage imageInfoHop;
 
   private Image imageWarning;
 
@@ -293,7 +293,7 @@ public class GUIResource {
 
   private Image imageNew;
 
-  private Image imageEdit;
+  private SwtUniversalImage imageEdit;
 
   private Image imageDelete;
 
@@ -307,13 +307,13 @@ public class GUIResource {
 
   private Image imageExport;
 
-  private Image imageHopInput;
+  private SwtUniversalImage imageHopInput;
 
-  private Image imageHopOutput;
+  private SwtUniversalImage imageHopOutput;
 
-  private Image imageHopTarget;
+  private SwtUniversalImage imageHopTarget;
 
-  private Image imageLocked;
+  private SwtUniversalImage imageLocked;
 
   private Image imageTrue;
 
@@ -910,16 +910,16 @@ public class GUIResource {
 
     // "ui/images/show-error-lines.png;
     imageStepError =
-      ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "StepErrorLines_image" ) );
+        SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "StepErrorLines_image" ) );
 
     // "ui/images/copy-hop.png;
-    imageCopyHop = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "CopyHop_image" ) );
+    imageCopyHop = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "CopyHop_image" ) );
 
     // "ui/images/error-hop.png;
-    imageErrorHop = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "ErrorHop_image" ) );
+    imageErrorHop = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "ErrorHop_image" ) );
 
     // "ui/images/info-hop.png;
-    imageInfoHop = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "InfoHop_image" ) );
+    imageInfoHop = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "InfoHop_image" ) );
 
     // "ui/images/warning.png;
     imageWarning = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Warning_image" ) );
@@ -932,7 +932,7 @@ public class GUIResource {
     imageNew = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "New_image" ) );
 
     // "ui/images/generic-edit.png;
-    imageEdit = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Edit_image" ) );
+    imageEdit = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Edit_image" ) );
 
     // "ui/images/generic-delete.png;
     imageDelete = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Delete_image" ) );
@@ -955,16 +955,16 @@ public class GUIResource {
     imageExport = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Export_image" ) );
 
     // "ui/images/hop-input.png;
-    imageHopInput = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "HopInput_image" ) );
+    imageHopInput = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "HopInput_image" ) );
 
     // "ui/images/hop-output.png;
-    imageHopOutput = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "HopOutput_image" ) );
+    imageHopOutput = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "HopOutput_image" ) );
 
     // "ui/images/hop-target.png;
-    imageHopTarget = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "HopTarget_image" ) );
+    imageHopTarget = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "HopTarget_image" ) );
 
     // "ui/images/locked.png;
-    imageLocked = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Locked_image" ) );
+    imageLocked = SwtSvgImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "Locked_image" ) );
 
     // "ui/images/true.png;
     imageTrue = ImageUtil.getImageAsResource( display, BasePropertyHandler.getProperty( "True_image" ) );
@@ -1332,7 +1332,7 @@ public class GUIResource {
   /**
    * @return Returns the imageConnection.
    */
-  public Image getImageConnection() {
+  public SwtUniversalImage getImageConnection() {
     return imageConnection;
   }
 
@@ -1626,7 +1626,7 @@ public class GUIResource {
   /**
    * @return the imageArrow
    */
-  public Image getImageArrow() {
+  public SwtUniversalImage getImageArrow() {
     return imageArrow;
   }
 
@@ -1949,19 +1949,19 @@ public class GUIResource {
     return imageCollapseAll;
   }
 
-  public Image getImageStepError() {
+  public SwtUniversalImage getImageStepError() {
     return imageStepError;
   }
 
-  public Image getImageCopyHop() {
+  public SwtUniversalImage getImageCopyHop() {
     return imageCopyHop;
   }
 
-  public Image getImageErrorHop() {
+  public SwtUniversalImage getImageErrorHop() {
     return imageErrorHop;
   }
 
-  public Image getImageInfoHop() {
+  public SwtUniversalImage getImageInfoHop() {
     return imageInfoHop;
   }
 
@@ -1977,7 +1977,7 @@ public class GUIResource {
     return imageNew;
   }
 
-  public Image getImageEdit() {
+  public SwtUniversalImage getImageEdit() {
     return imageEdit;
   }
 
@@ -2005,19 +2005,19 @@ public class GUIResource {
     return imageExport;
   }
 
-  public Image getImageHopInput() {
+  public SwtUniversalImage getImageHopInput() {
     return imageHopInput;
   }
 
-  public Image getImageHopOutput() {
+  public SwtUniversalImage getImageHopOutput() {
     return imageHopOutput;
   }
 
-  public Image getImageHopTarget() {
+  public SwtUniversalImage getImageHopTarget() {
     return imageHopTarget;
   }
 
-  public Image getImageLocked() {
+  public SwtUniversalImage getImageLocked() {
     return imageLocked;
   }
 
@@ -2058,33 +2058,33 @@ public class GUIResource {
   /**
    * @return the imageTrue
    */
-  public Image getImageTrue() {
+  public SwtUniversalImage getImageTrue() {
     return imageTrue;
   }
 
   /**
    * @return the imageFalse
    */
-  public Image getImageFalse() {
+  public SwtUniversalImage getImageFalse() {
     return imageFalse;
   }
 
   /**
    * @return the imageContextMenu
    */
-  public Image getImageContextMenu() {
+  public SwtUniversalImage getImageContextMenu() {
     return imageContextMenu;
   }
 
-  public Image getImageParallelHop() {
+  public SwtUniversalImage getImageParallelHop() {
     return imageParallelHop;
   }
 
-  public Image getImageUnconditionalHop() {
+  public SwtUniversalImage getImageUnconditionalHop() {
     return imageUnconditionalHop;
   }
 
-  public Image getImageBusy() {
+  public SwtUniversalImage getImageBusy() {
     return imageBusy;
   }
 
@@ -2092,11 +2092,11 @@ public class GUIResource {
     return imageEmpty16x16;
   }
 
-  public Image getImageInject() {
+  public SwtUniversalImage getImageInject() {
     return imageInject;
   }
 
-  public Image getImageBalance() {
+  public SwtUniversalImage getImageBalance() {
     return imageBalance;
   }
 
@@ -2108,7 +2108,7 @@ public class GUIResource {
     this.imageSpoonHigh = imageSpoonHigh;
   }
 
-  public Image getImageCheckpoint() {
+  public SwtUniversalImage getImageCheckpoint() {
     return imageCheckpoint;
   }
 

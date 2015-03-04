@@ -125,19 +125,35 @@ public class SWTDirectGC implements GCInterface {
     gc.drawLine( x, y, x2, y2 );
   }
 
-  public void drawImage( EImage image, int x, int y ) {
+  public void drawImage( EImage image, int x, int y, float magnification ) {
+    Image im =
+        getSvgImage( image ).getAsBitmapForSize( gc.getDevice(), Math.round( iconsize * magnification ),
+            Math.round( iconsize * magnification ) );
+    if ( im != null ) { // Draw the icon!
 
-    Image img = getNativeImage( image );
-    gc.drawImage( img, x, y );
+      org.eclipse.swt.graphics.Rectangle bounds = im.getBounds();
+      gc.drawImage( im, 0, 0, bounds.width, bounds.height, x, y, iconsize, iconsize );
+    }
+
+  }
+  
+  @Override
+  public void drawImage( EImage image, int x, int y ) {
+    drawImage(image, x, y, 1.0f);
   }
 
   public Point getImageBounds( EImage image ) {
-    Image img = getNativeImage( image );
+    Image img = getSvgImage( image ).getAsBitmap( gc.getDevice() );
     Rectangle r = img.getBounds();
     return new Point( r.width, r.height );
   }
+  
+  public static final Image getNativeImage( EImage image ) {   
+    Image img = getSvgImage(image).getAsBitmap(  GUIResource.getInstance().getDisplay() );
+    return img;
+  }
 
-  public static final Image getNativeImage( EImage image ) {
+  public static final SwtUniversalImage getSvgImage( EImage image ) {
     switch ( image ) {
       case LOCK:
         return GUIResource.getInstance().getImageLocked();

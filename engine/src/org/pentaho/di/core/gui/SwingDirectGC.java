@@ -44,6 +44,7 @@ import javax.imageio.ImageIO;
 import org.jfree.text.TextUtilities;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.gui.PrimitiveGCInterface.EImage;
 import org.pentaho.di.job.entry.JobEntryCopy;
 import org.pentaho.di.laf.BasePropertyHandler;
 import org.pentaho.di.trans.step.StepMeta;
@@ -267,6 +268,11 @@ public class SwingDirectGC implements GCInterface {
 
     // gc.drawImage(img, locationX+xOffset, locationY+yOffset, observer);
 
+  }
+  
+  @Override
+  public void drawImage( EImage image, int x, int y, float magnification ) {
+    drawImage( image, x, y);
   }
 
   public void drawPixelatedImage( BufferedImage img, int locationX, int locationY ) {
