@@ -323,20 +323,22 @@ public class JobPainter extends BasePainter {
       int areaX = x + iconsize / 2 - totalWidth / 2 + MINI_ICON_SKEW;
       int areaY = y + iconsize + MINI_ICON_DISTANCE;
 
-      gc.setForeground( EColor.DARKGRAY );
-      gc.setBackground( EColor.LIGHTGRAY );
+      gc.setForeground( EColor.CRYSTAL );
+      gc.setBackground( EColor.CRYSTAL );
       gc.setLineWidth( 1 );
-      gc.fillRoundRectangle( areaX, areaY, totalWidth, totalHeight, 7, 7 );
-      gc.drawRoundRectangle( areaX, areaY, totalWidth, totalHeight, 7, 7 );
+      gc.fillRoundRectangle( areaX, areaY, totalWidth, totalHeight, 5, 5 );
+      gc.drawRoundRectangle( areaX, areaY, totalWidth, totalHeight, 5, 5 );
 
-      gc.setBackground( EColor.BACKGROUND );
-      gc.fillRoundRectangle( areaX + 2, areaY + 2, totalWidth - MINI_ICON_MARGIN + 1, nameExtent.y
-        - MINI_ICON_MARGIN, 7, 7 );
-      gc.setForeground( EColor.BLACK );
+      gc.setBackground( EColor.WHITE );
+      
+      gc.fillRoundRectangle( areaX + 1, areaY + nameExtent.y, totalWidth, (totalHeight - nameExtent.y), 5, 5 );
+      gc.fillRectangle( areaX + 1, areaY + nameExtent.y, totalWidth, (totalHeight - nameExtent.y) / 2);
+      
+      gc.setForeground( EColor.WHITE );
       gc.drawText( trimmedName, areaX + ( totalWidth - nameExtent.x ) / 2 + MINI_ICON_MARGIN, areaY
         + MINI_ICON_MARGIN, true );
-      gc.setForeground( EColor.DARKGRAY );
-      gc.setBackground( EColor.LIGHTGRAY );
+      gc.setForeground( EColor.CRYSTAL );
+      gc.setBackground( EColor.CRYSTAL );
 
       gc.setFont( EFont.GRAPH );
       areaOwners.add( new AreaOwner(

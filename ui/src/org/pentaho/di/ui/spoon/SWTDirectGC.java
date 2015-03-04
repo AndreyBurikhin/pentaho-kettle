@@ -57,6 +57,7 @@ public class SWTDirectGC implements GCInterface {
   protected Color background;
 
   protected Color black;
+  protected Color white;
   protected Color red;
   protected Color yellow;
   protected Color orange;
@@ -67,6 +68,7 @@ public class SWTDirectGC implements GCInterface {
   protected Color lightGray;
   protected Color darkGray;
   protected Color lightBlue;
+  protected Color crystal;
 
   private GC gc;
 
@@ -92,6 +94,7 @@ public class SWTDirectGC implements GCInterface {
 
     this.background = GUIResource.getInstance().getColorGraph();
     this.black = GUIResource.getInstance().getColorBlack();
+    this.white = GUIResource.getInstance().getColorWhite();
     this.red = GUIResource.getInstance().getColorRed();
     this.yellow = GUIResource.getInstance().getColorYellow();
     this.orange = GUIResource.getInstance().getColorOrange();
@@ -102,7 +105,7 @@ public class SWTDirectGC implements GCInterface {
     this.lightGray = GUIResource.getInstance().getColorLightGray();
     this.darkGray = GUIResource.getInstance().getColorDarkGray();
     this.lightBlue = GUIResource.getInstance().getColorLightBlue();
-
+    this.crystal = GUIResource.getInstance().getColorCrystalTextPentaho();
   }
 
   public void dispose() {
@@ -241,6 +244,8 @@ public class SWTDirectGC implements GCInterface {
         return background;
       case BLACK:
         return black;
+      case WHITE:
+        return white;
       case RED:
         return red;
       case YELLOW:
@@ -261,6 +266,8 @@ public class SWTDirectGC implements GCInterface {
         return darkGray;
       case LIGHTBLUE:
         return lightBlue;
+      case CRYSTAL:
+        return crystal;
       default:
         break;
     }
