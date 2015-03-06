@@ -1490,7 +1490,7 @@ public class TransGraph extends AbstractGraph implements XulEventHandler, Redraw
       for ( final StreamInterface stream : streams ) {
         MenuItem item = new MenuItem( menu, SWT.NONE );
         item.setText( Const.NVL( stream.getDescription(), "" ) );
-        item.setImage( SWTGC.getNativeImage( BasePainter.getStreamIconImage( stream.getStreamIcon() ) ) );
+      //TODO  item.setImage( SWTGC.getNativeImage( BasePainter.getStreamIconImage( stream.getStreamIcon() ) ) );
         item.addSelectionListener( new SelectionAdapter() {
           public void widgetSelected( SelectionEvent e ) {
             addHop( stream );
