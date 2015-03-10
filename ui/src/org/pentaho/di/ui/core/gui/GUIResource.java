@@ -194,6 +194,14 @@ public class GUIResource {
 
   private Image imageSlave;
 
+  private SwtUniversalImage imageDefaultArrow;
+  
+  private SwtUniversalImage imageOKArrow;
+  
+  private SwtUniversalImage imageDisabledArrow;
+  
+  private SwtUniversalImage imageErrorArrow;
+  
   private SwtUniversalImage imageArrow;
 
   private SwtUniversalImage imageFolder;
@@ -516,6 +524,10 @@ public class GUIResource {
       imageCalendar.dispose();
       imageCluster.dispose();
       imageSlave.dispose();
+      imageDefaultArrow.dispose();
+      imageOKArrow.dispose();
+      imageDisabledArrow.dispose();
+      imageErrorArrow.dispose();
       imageArrow.dispose();
       imageFolder.dispose();
       imageWizard.dispose();
@@ -1037,6 +1049,18 @@ public class GUIResource {
     imageArrow = SwtSvgImageUtil.getUniversalImage( 
         display, getClass().getClassLoader(), SvgSupport.toSvgName( BasePropertyHandler.getProperty( "ArrowIcon_image" ) ) );
 
+    imageDefaultArrow = SwtSvgImageUtil.getUniversalImage( 
+        display, getClass().getClassLoader(), SvgSupport.toSvgName( BasePropertyHandler.getProperty( "Default_Arrow_image" ) ) );
+    
+    imageOKArrow = SwtSvgImageUtil.getUniversalImage( 
+        display, getClass().getClassLoader(), SvgSupport.toSvgName( BasePropertyHandler.getProperty( "OK_Arrow_image" ) ) );
+    
+    imageDisabledArrow = SwtSvgImageUtil.getUniversalImage( 
+        display, getClass().getClassLoader(), SvgSupport.toSvgName( BasePropertyHandler.getProperty( "Disabled_Arrow_image" ) ) );
+    
+    imageErrorArrow = SwtSvgImageUtil.getUniversalImage( 
+        display, getClass().getClassLoader(), SvgSupport.toSvgName( BasePropertyHandler.getProperty( "Error_Arrow_image" ) ) );
+    
     // "ui/images/folder.png"
     imageFolder = SwtSvgImageUtil.getUniversalImage( 
         display, getClass().getClassLoader(), ( "ui/images/folder.svg" ) );
@@ -1639,6 +1663,22 @@ public class GUIResource {
   
   public SwtUniversalImage getSwtImageArrow() {
     return imageArrow;
+  }
+  
+  public SwtUniversalImage getSwtImageDefaultArrow() {
+    return imageDefaultArrow;
+  }
+  
+  public SwtUniversalImage getSwtImageOKArrow() {
+    return imageOKArrow;
+  }
+  
+  public SwtUniversalImage getSwtImageDisabledArrow() {
+    return imageDisabledArrow;
+  }
+  
+  public SwtUniversalImage getSwtImageErrorArrow() {
+    return imageErrorArrow;
   }
   
   /**
