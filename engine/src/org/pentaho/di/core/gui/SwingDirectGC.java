@@ -258,6 +258,11 @@ public class SwingDirectGC implements GCInterface {
   public void drawLine( int x, int y, int x2, int y2 ) {
     gc.drawLine( x + xOffset, y + yOffset, x2 + xOffset, y2 + yOffset );
   }
+  
+  @Override
+  public void drawArrow( EArrow arrow, int x, int y, float angle, float magnification ) {
+    //TODO
+  }
 
   public void drawImage( EImage image, int locationX, int locationY, float magnification ) {
 

@@ -126,6 +126,25 @@ public class SWTGC implements GCInterface {
   public void drawLine( int x, int y, int x2, int y2 ) {
     gc.drawLine( x, y, x2, y2 );
   }
+  
+  @Override
+  public void drawArrow( EArrow arrow, int x, int y, float angle, float magnification ) {
+    SwtUniversalImage arrowImage = GUIResource.getInstance().getSwtImageDefaultArrow();
+    Transform arrowtransform = new Transform( gc.getDevice() );
+    //transform.translate( arg0, arg1 );
+    arrowtransform.rotate( angle );
+    gc.setTransform(arrowtransform);
+    Image img =
+        arrowImage.getAsBitmapForSize( gc.getDevice(), Math.round( small_icon_size * magnification ),
+            Math.round( small_icon_size * magnification ) );
+    if ( img != null ) {
+      Rectangle bounds = img.getBounds();
+      gc.drawImage( img, 0, 0, bounds.width, bounds.height, x, y, Math.round( small_icon_size * magnification ), Math
+          .round( small_icon_size * magnification ) );
+    }
+    gc.setTransform( transform );
+    arrowtransform.dispose();
+  }
 
   public void drawImage( EImage image, int x, int y, float magnification ) {
     Image img = getNativeImage( image ).getAsBitmapForSize( gc.getDevice(), Math.round( small_icon_size * magnification ),

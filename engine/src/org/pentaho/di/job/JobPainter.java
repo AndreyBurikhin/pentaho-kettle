@@ -37,6 +37,7 @@ import org.pentaho.di.core.gui.AreaOwner.AreaType;
 import org.pentaho.di.core.gui.BasePainter;
 import org.pentaho.di.core.gui.GCInterface;
 import org.pentaho.di.core.gui.Point;
+import org.pentaho.di.core.gui.PrimitiveGCInterface.EArrow;
 import org.pentaho.di.core.gui.PrimitiveGCInterface.EColor;
 import org.pentaho.di.core.gui.PrimitiveGCInterface.EFont;
 import org.pentaho.di.core.gui.PrimitiveGCInterface.EImage;
@@ -550,6 +551,8 @@ public class JobPainter extends BasePainter {
     // calculate points for arrowhead
     angle = Math.atan2( y2 - y1, x2 - x1 ) + Math.PI;
 
+    gc.drawArrow( EArrow.DEFAULT, mx, my, (float) angle, magnification );
+    
     x3 = (int) ( mx + Math.cos( angle - theta ) * size );
     y3 = (int) ( my + Math.sin( angle - theta ) * size );
 

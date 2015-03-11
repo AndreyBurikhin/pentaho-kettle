@@ -37,6 +37,10 @@ public interface PrimitiveGCInterface {
   public enum ELineStyle {
     SOLID, DASHDOT, DOT, PARALLEL,
   }
+  
+  public enum EArrow {
+    DEFAULT, OK, DISABLED, ERROR,
+  }
 
   public enum EImage {
     LOCK, STEP_ERROR, EDIT, CONTEXT_MENU, TRUE, FALSE, ERROR, INFO, TARGET, INPUT, OUTPUT, ARROW, COPY_ROWS,
@@ -65,6 +69,8 @@ public interface PrimitiveGCInterface {
   public void fillRectangle( int x, int y, int width, int height );
 
   public void fillGradientRectangle( int x, int y, int width, int height, boolean vertical );
+  
+  public void drawArrow(EArrow arrow, int x, int y, float angle, float magnification);
 
   public void drawImage( EImage image, int x, int y, float magnification );
 
