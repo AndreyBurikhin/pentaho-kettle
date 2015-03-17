@@ -753,6 +753,8 @@ public class TransPainter extends BasePainter {
     // Optionally drawn the mouse-over information
     //
     if ( mouseOverSteps.contains( stepMeta ) ) {
+      gc.setTransform( translationX, translationY, 0, BasePainter.FACTOR_1_TO_1 );
+      
       StepMetaInjectionInterface injectionInterface =
         stepMeta.getStepMetaInterface().getStepMetaInjectionInterface();
 
@@ -787,8 +789,8 @@ public class TransPainter extends BasePainter {
         totalWidth = nameExtent.x;
       }
 
-      int areaX = x + iconsize / 2 - totalWidth / 2 + MINI_ICON_SKEW;
-      int areaY = y + iconsize + MINI_ICON_DISTANCE  + BasePainter.CONTENT_MENU_INDENT;
+      int areaX = Math.round(x * magnification) + Math.round(iconsize * magnification) / 2 - totalWidth / 2 + MINI_ICON_SKEW;
+      int areaY = Math.round(y * magnification) + Math.round(iconsize * magnification) + MINI_ICON_DISTANCE  + BasePainter.CONTENT_MENU_INDENT;
 
       gc.setForeground( EColor.CRYSTAL );
       gc.setBackground( EColor.CRYSTAL );
@@ -812,7 +814,7 @@ public class TransPainter extends BasePainter {
 
       gc.setFont( EFont.GRAPH );
       areaOwners.add( new AreaOwner(
-        AreaType.MINI_ICONS_BALLOON, areaX, areaY, totalWidth, totalHeight, offset, stepMeta, ioMeta ) );
+        AreaType.MINI_ICONS_BALLOON, Math.round(areaX / magnification), Math.round(areaY / magnification), totalWidth, totalHeight, offset, stepMeta, ioMeta ) );
 
       gc.fillPolygon( new int[] {
         areaX + totalWidth / 2 - MINI_ICON_TRIANGLE_BASE / 2 + 1, areaY + 2,
@@ -839,28 +841,28 @@ public class TransPainter extends BasePainter {
           case 0: // INPUT
             enabled = ioMeta.isInputAcceptor() || ioMeta.isInputDynamic();
             areaOwners.add( new AreaOwner(
-              AreaType.STEP_INPUT_HOP_ICON, xIcon, yIcon, bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
+              AreaType.STEP_INPUT_HOP_ICON, Math.round(xIcon / magnification), Math.round(yIcon / magnification), bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
             break;
           case 1: // EDIT
             enabled = true;
             areaOwners.add( new AreaOwner(
-              AreaType.STEP_EDIT_ICON, xIcon, yIcon, bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
+              AreaType.STEP_EDIT_ICON, Math.round(xIcon / magnification), Math.round(yIcon / magnification), bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
             break;
           case 2: // STEP_MENU
             enabled = true;
             areaOwners.add( new AreaOwner(
-              AreaType.STEP_MENU_ICON, xIcon, yIcon, bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
+              AreaType.STEP_MENU_ICON, Math.round(xIcon / magnification), Math.round(yIcon / magnification), bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
             break;
           case 3: // OUTPUT
             enabled = ioMeta.isOutputProducer() || ioMeta.isOutputDynamic();
             areaOwners.add( new AreaOwner(
-              AreaType.STEP_OUTPUT_HOP_ICON, xIcon, yIcon, bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
+              AreaType.STEP_OUTPUT_HOP_ICON, Math.round(xIcon / magnification), Math.round(yIcon / magnification), bounds.x, bounds.y, offset, stepMeta, ioMeta ) );
             break;
           case 4: // INJECT
             enabled = injectionInterface != null;
             areaOwners
               .add( new AreaOwner(
-                AreaType.STEP_INJECT_ICON, xIcon, yIcon, bounds.x, bounds.y, offset, stepMeta,
+                AreaType.STEP_INJECT_ICON, Math.round(xIcon / magnification), Math.round(yIcon / magnification), bounds.x, bounds.y, offset, stepMeta,
                 injectionInterface ) );
             break;
           default:
@@ -871,7 +873,7 @@ public class TransPainter extends BasePainter {
         } else {
           gc.setAlpha( 100 );
         }
-        gc.drawImage( miniIcon, xIcon, yIcon, magnification );
+        gc.drawImage( miniIcon, xIcon, yIcon, BasePainter.FACTOR_1_TO_1 );
         xIcon += bounds.x + 5;
       }
 
@@ -915,6 +917,7 @@ public class TransPainter extends BasePainter {
 
         gc.setBackground( EColor.BACKGROUND );
       }
+      gc.setTransform( translationX, translationY, 0, magnification );
     }
 
     TransPainterExtension extension =

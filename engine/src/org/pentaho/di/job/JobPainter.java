@@ -295,6 +295,8 @@ public class JobPainter extends BasePainter {
     // Optionally drawn the mouse-over information
     //
     if ( mouseOverEntries.contains( jobEntryCopy ) ) {
+      gc.setTransform( translationX, translationY, 0, BasePainter.FACTOR_1_TO_1 );
+      
       EImage[] miniIcons = new EImage[] { EImage.INPUT, EImage.EDIT, EImage.CONTEXT_MENU, EImage.OUTPUT, };
 
       // First drawn the mini-icons balloon below the job entry
@@ -323,8 +325,11 @@ public class JobPainter extends BasePainter {
         totalWidth = nameExtent.x;
       }
 
-      int areaX = x + iconsize / 2 - totalWidth / 2 + MINI_ICON_SKEW;
-      int areaY = y + iconsize + MINI_ICON_DISTANCE + BasePainter.CONTENT_MENU_INDENT;
+      int areaX = Math.round(x * magnification) + Math.round(iconsize * magnification) / 2 - totalWidth / 2 + MINI_ICON_SKEW;;
+      int areaY = Math.round(y * magnification) + Math.round(iconsize * magnification) + MINI_ICON_DISTANCE + BasePainter.CONTENT_MENU_INDENT;
+      
+      int areaOriginalX = x + iconsize / 2 - totalWidth / 2 + MINI_ICON_SKEW;;
+      int areaOriginalY = y + iconsize + MINI_ICON_DISTANCE + BasePainter.CONTENT_MENU_INDENT;
 
       gc.setForeground( EColor.CRYSTAL );
       gc.setBackground( EColor.CRYSTAL );
@@ -348,7 +353,8 @@ public class JobPainter extends BasePainter {
 
       gc.setFont( EFont.GRAPH );
       areaOwners.add( new AreaOwner(
-        AreaType.MINI_ICONS_BALLOON, areaX, areaY, totalWidth, totalHeight, offset, jobMeta, jobEntryCopy ) );
+        AreaType.MINI_ICONS_BALLOON, areaOriginalX, areaOriginalY, totalWidth, totalHeight, offset, jobMeta, jobEntryCopy ) );
+      gc.drawRectangle( Math.round(areaX / magnification), Math.round(areaY /magnification), totalWidth, totalHeight );
 
       gc.fillPolygon( new int[] {
         areaX + totalWidth / 2 - MINI_ICON_TRIANGLE_BASE / 2 + 1, areaY + 2,
@@ -373,44 +379,51 @@ public class JobPainter extends BasePainter {
           case 0: // INPUT
             enabled = !jobEntryCopy.isStart();
             areaOwners.add( new AreaOwner(
-              AreaType.JOB_ENTRY_MINI_ICON_INPUT, xIcon, yIcon, bounds.x, bounds.y, offset, jobMeta,
+              AreaType.JOB_ENTRY_MINI_ICON_INPUT,translateToReal(xIcon), translateToReal(yIcon), bounds.x, bounds.y, offset, jobMeta,
               jobEntryCopy ) );
             break;
           case 1: // EDIT
             enabled = true;
             areaOwners
               .add( new AreaOwner(
-                AreaType.JOB_ENTRY_MINI_ICON_EDIT, xIcon, yIcon, bounds.x, bounds.y, offset, jobMeta,
+                AreaType.JOB_ENTRY_MINI_ICON_EDIT, translateToReal(xIcon), translateToReal(yIcon), bounds.x, bounds.y, offset, jobMeta,
                 jobEntryCopy ) );
             break;
           case 2: // Job entry context menu
             enabled = true;
             areaOwners.add( new AreaOwner(
-              AreaType.JOB_ENTRY_MINI_ICON_CONTEXT, xIcon, yIcon, bounds.x, bounds.y, offset, jobMeta,
+              AreaType.JOB_ENTRY_MINI_ICON_CONTEXT, translateToReal(xIcon), translateToReal(yIcon), bounds.x, bounds.y, offset, jobMeta,
               jobEntryCopy ) );
             break;
           case 3: // OUTPUT
             enabled = true;
             areaOwners.add( new AreaOwner(
-              AreaType.JOB_ENTRY_MINI_ICON_OUTPUT, xIcon, yIcon, bounds.x, bounds.y, offset, jobMeta,
+              AreaType.JOB_ENTRY_MINI_ICON_OUTPUT, translateToReal(xIcon), translateToReal(yIcon), bounds.x, bounds.y, offset, jobMeta,
               jobEntryCopy ) );
             break;
           default:
             break;
         }
+        gc.drawRectangle( translateToReal(xIcon), translateToReal(yIcon), bounds.x, bounds.y );
+
         if ( enabled ) {
           gc.setAlpha( 255 );
         } else {
           gc.setAlpha( 100 );
         }
-        gc.drawImage( miniIcon, xIcon, yIcon, magnification );
+        gc.drawImage( miniIcon, xIcon, yIcon, BasePainter.FACTOR_1_TO_1 );
         xIcon += bounds.x + 5;
       }
+      gc.setTransform( translationX, translationY, 0, magnification );
     }
 
     // Restore the previous alpha value
     //
     gc.setAlpha( alpha );
+  }
+  
+  protected int translateToReal(int value) {
+    return magnification > 1 ? Math.round(value / magnification) : value;
   }
 
   private JobEntryResult findJobEntryResult( JobEntryCopy jobEntryCopy ) {
