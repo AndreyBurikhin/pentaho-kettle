@@ -8577,8 +8577,7 @@ public class Spoon extends ApplicationWindow implements AddUndoPositionInterface
         } else if ( steps ) {
           TransGraph transGraph = getActiveTransGraph();
           if ( transGraph != null && transGraph.getLastMove() != null ) {
-            pasteXML( transGraph.getManagedObject(), clipContent, transGraph.screen2real(
-              transGraph.getLastMove().x, transGraph.getLastMove().y ) );
+            pasteXML( transGraph.getManagedObject(), clipContent, transGraph.getLastMove() );
           }
         } else if ( jobEntries ) {
           JobGraph jobGraph = getActiveJobGraph();
