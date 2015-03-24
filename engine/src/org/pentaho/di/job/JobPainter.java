@@ -238,10 +238,15 @@ public class JobPainter extends BasePainter {
     gc.fillRectangle( x - 1, y - 1, iconsize + 1, iconsize + 1 );
     gc.drawJobEntryIcon( x, y, jobEntryCopy, magnification );
     
+    if ( !shadow ) {
+      areaOwners.add( new AreaOwner(
+        AreaType.JOB_ENTRY_ICON, x, y, iconsize, iconsize, offset, subject, jobEntryCopy ) );
+    }
+    
     if ( activeJobEntries != null && activeJobEntries.contains( jobEntryCopy ) ) {
       gc.setForeground( EColor.BLUE );
-      int iconX = x + iconsize - 7;
-      int iconY = y - 7;
+      int iconX = ( x + iconsize ) - SMALL_ICON_SIZE - 2;
+      int iconY = y + 1;
       gc.drawImage( EImage.BUSY, iconX, iconY, magnification );
       areaOwners.add( new AreaOwner(
         AreaType.JOB_ENTRY_BUSY, iconX, iconY, iconsize, iconsize, offset, subject, jobEntryCopy ) );
@@ -252,8 +257,8 @@ public class JobPainter extends BasePainter {
     JobEntryResult jobEntryResult = findJobEntryResult( jobEntryCopy );
     if ( jobEntryResult != null ) {
       Result result = jobEntryResult.getResult();
-      int iconX = x + iconsize - 7;
-      int iconY = y - 7;
+      int iconX = ( x + iconsize ) - SMALL_ICON_SIZE - 2;
+      int iconY = y + 1;
 
       // Draw an execution result on the top right corner...
       //
@@ -269,7 +274,7 @@ public class JobPainter extends BasePainter {
             AreaType.JOB_ENTRY_RESULT_SUCCESS, iconX, iconY, iconsize, iconsize, offset, jobEntryCopy,
             jobEntryResult ) );
         } else {
-          gc.drawImage( EImage.FALSE, x + iconsize, y - 5, magnification );
+          gc.drawImage( EImage.FALSE, iconX, iconY, magnification );
           areaOwners.add( new AreaOwner(
             AreaType.JOB_ENTRY_RESULT_FAILURE, iconX, iconY, iconsize, iconsize, offset, jobEntryCopy,
             jobEntryResult ) );

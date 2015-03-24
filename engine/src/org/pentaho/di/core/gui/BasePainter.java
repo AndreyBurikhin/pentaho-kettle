@@ -68,6 +68,8 @@ public class BasePainter {
   protected float translationY;
   protected boolean shadow;
 
+  protected static final int SMALL_ICON_SIZE = 16;
+  
   protected Object subject;
 
   protected GCInterface gc;
