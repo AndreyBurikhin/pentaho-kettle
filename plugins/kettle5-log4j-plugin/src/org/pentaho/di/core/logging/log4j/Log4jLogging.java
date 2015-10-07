@@ -22,9 +22,6 @@
 
 package org.pentaho.di.core.logging.log4j;
 
-import java.io.FileNotFoundException;
-
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -68,8 +65,7 @@ public class Log4jLogging implements LoggingPluginInterface {
 
   @Override
   public void init() {
-    applyLog4jConfiguration();
-    pentahoLogger = Logger.getLogger( STRING_PENTAHO_DI_LOGGER_NAME );
+    pentahoLogger = createLogger( STRING_PENTAHO_DI_LOGGER_NAME );
     pentahoLogger.setAdditivity( false );
     KettleLogStore.getAppender().addLoggingEventListener( this );
   }
@@ -77,11 +73,20 @@ public class Log4jLogging implements LoggingPluginInterface {
   public void dispose() {
     KettleLogStore.getAppender().removeLoggingEventListener( this );
   }
-  
-  private static void applyLog4jConfiguration() {
+
+  private void applyLog4jConfiguration() {
     LogLog.setQuietMode( true );
     LogManager.resetConfiguration();
     LogLog.setQuietMode( false );
-    DOMConfigurator.configure( PLUGIN_PROPERTIES_FILE );
+    DOMConfigurator.configure( getConfigurationFileName() );
+  }
+  
+  Logger createLogger( String loggerName ) {
+    applyLog4jConfiguration();
+    return Logger.getLogger( loggerName );
+  }
+
+  String getConfigurationFileName() {
+    return PLUGIN_PROPERTIES_FILE;
   }
 }
