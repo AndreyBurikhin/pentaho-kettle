@@ -28,6 +28,11 @@ import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
+/**
+ * 
+ * @deprecated As of release 6.1, use log4j appender {@link org.apache.log4j.ConsoleAppender} instead
+ */
+@Deprecated
 public class Log4jConsoleAppender implements Appender {
   private Layout layout;
   private Filter filter;

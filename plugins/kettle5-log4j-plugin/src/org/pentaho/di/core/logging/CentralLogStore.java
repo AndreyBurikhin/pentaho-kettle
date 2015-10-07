@@ -28,6 +28,11 @@ import java.util.List;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
+/**
+ * 
+ * @deprecated As of release 6.1, no longer needed. This class does not used in kettle5-log4j-plugin's project
+ */
+@Deprecated
 public class CentralLogStore {
   /**
    * Create the central log store with optional limitation to the size
