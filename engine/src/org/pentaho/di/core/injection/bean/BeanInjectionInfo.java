@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pentaho.di.trans.steps.fileinput.text.TextFileInputMeta;
+
 /**
  * Storage for bean annotations info for Metadata Injection and Load/Save.
  *
@@ -15,6 +17,10 @@ public class BeanInjectionInfo {
   Map<String, InjectionProperty> properties = new HashMap<>();
   List<InjectionGroup> groups=new ArrayList<>();
 
+  public static boolean isInjectionSupported(Class<?> clazz) {
+    return clazz==TextFileInputMeta.class;
+  }
+  
   public BeanInjectionInfo( Class<?> clazz ) {
     BeanLevelInfo root = new BeanLevelInfo();
     root.leafClass = clazz;
