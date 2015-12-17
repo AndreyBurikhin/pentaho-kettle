@@ -38,7 +38,6 @@ import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.core.fileinput.FileInputList;
 import org.pentaho.di.core.injection.Injection;
-import org.pentaho.di.core.injection.InjectionGroup;
 import org.pentaho.di.core.injection.InjectionSupported;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
@@ -67,13 +66,7 @@ import org.w3c.dom.Node;
 
 import com.google.common.annotations.VisibleForTesting;
 
-@InjectionSupported( {
-
-  @InjectionGroup( name = "FILENAME_LINES", description = "The list of file definitions" ),
-
-  @InjectionGroup( name = "FIELDS", description = "The list of file definitions" )
-
-})
+@InjectionSupported( localizationPrefix = "TextFileInput.Injection.", groups = { "FILENAME_LINES", "FIELDS" } )
 public class TextFileInputMeta extends BaseFileInputStepMeta implements StepMetaInterface {
   private static Class<?> PKG = TextFileInputMeta.class; // for i18n purposes, needed by Translator2!! TODO: check i18n
                                                          // for base
@@ -92,11 +85,11 @@ public class TextFileInputMeta extends BaseFileInputStepMeta implements StepMeta
   public static class Content implements Cloneable {
 
     /** Type of file: CSV or fixed */
-    @Injection( name = "FILE_TYPE",  description = "The field separator" )
+    @Injection( name = "FILE_TYPE" )
     public String fileType;
 
     /** String used to separated field (;) */
-    @Injection( name = "SEPARATOR",  description = "The field separator" )
+    @Injection( name = "SEPARATOR" )
     public String separator;
 
     /** String used to enclose separated fields (") */

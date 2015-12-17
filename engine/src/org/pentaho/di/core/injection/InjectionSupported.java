@@ -8,5 +8,7 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE } )
 public @interface InjectionSupported {
-  InjectionGroup[] value();
+  String localizationPrefix();
+
+  String[] groups();
 }

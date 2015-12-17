@@ -11,6 +11,4 @@ public @interface Injection {
   String name();
 
   String group() default "";
-
-  String description();
 }

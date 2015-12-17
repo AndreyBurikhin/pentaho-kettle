@@ -13,7 +13,7 @@ public class BeanInjector {
   public Object getProperty( Object root, String propName ) throws Exception {
     List<Integer> extractedIndexes = new ArrayList<>();
 
-    InjectionProperty prop = info.properties.get( propName );
+    BeanInjectionInfo.Property prop = info.getProperties().get( propName );
     if ( prop == null ) {
       throw new RuntimeException( "Property not found" );
     }
@@ -42,7 +42,7 @@ public class BeanInjector {
   public void setProperty( Object root, String propName, Object value ) throws Exception {
     List<Integer> extractedIndexes = new ArrayList<>();
     
-    InjectionProperty prop = info.properties.get( propName );
+    BeanInjectionInfo.Property prop = info.getProperties().get( propName );
     if ( prop == null ) {
       throw new RuntimeException( "Property not found" );
     }

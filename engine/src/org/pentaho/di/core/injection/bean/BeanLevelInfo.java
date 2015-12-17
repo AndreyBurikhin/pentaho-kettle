@@ -11,7 +11,7 @@ import org.pentaho.di.core.injection.Injection;
 /**
  * Storage for one step on the bean deep level.
  */
-public class BeanLevelInfo {
+class BeanLevelInfo {
   /** Parent step or null for root. */
   public BeanLevelInfo parent;
   /** Class for step from field or methods. */
@@ -46,23 +46,15 @@ public class BeanLevelInfo {
       }
       Injection metaInj = f.getAnnotation( Injection.class );
       if ( metaInj != null ) {
-        InjectionProperty prop = new InjectionProperty();
-        prop.name = metaInj.name();
-        prop.group = metaInj.group();
-        prop.description = metaInj.description();
-        prop.path = leaf.createCallStack();
-        info.properties.put( prop.name, prop );
-        BeanLevelInfo p = this;
-        while ( p != null ) {
-          p = p.parent;
-        }
+        info.addInjectionProperty( metaInj, leaf );
+        
       } else {
         leaf.init( info );
       }
     }
   }
 
-  private List<BeanLevelInfo> createCallStack() {
+  protected List<BeanLevelInfo> createCallStack() {
     List<BeanLevelInfo> stack = new ArrayList<>();
     BeanLevelInfo p = this;
     while ( p != null ) {
