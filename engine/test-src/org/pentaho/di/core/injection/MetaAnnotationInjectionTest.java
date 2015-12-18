@@ -1,11 +1,14 @@
 package org.pentaho.di.core.injection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import org.pentaho.di.core.injection.bean.BeanInjectionInfo;
 import org.pentaho.di.core.injection.bean.BeanInjector;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class MetaAnnotationInjectionTest {
 
@@ -27,8 +30,8 @@ public class MetaAnnotationInjectionTest {
     MetaBeanLevel1 obj = new MetaBeanLevel1();
 
     BeanInjector inj = new BeanInjector( ri );
-    inj.setProperty( obj, "SEPARATOR", "<sep>" );
-    inj.setProperty( obj, "FILENAME", "/tmp/file.txt" );
+    inj.setProperty( obj, "SEPARATOR", (List<Object>)(List)Arrays.asList( "<sep>") );
+    inj.setProperty( obj, "FILENAME", (List<Object>)(List)Arrays.asList("/tmp/file.txt"));
 
     assertEquals( "<sep>", obj.getSub().getSeparator() );
     assertEquals( "/tmp/file.txt", obj.getSub().getFiles()[0].getName() );

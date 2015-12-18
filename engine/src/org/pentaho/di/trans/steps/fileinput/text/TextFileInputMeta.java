@@ -67,7 +67,7 @@ import org.w3c.dom.Node;
 
 import com.google.common.annotations.VisibleForTesting;
 
-@InjectionSupported( localizationPrefix = "TextFileInput.Injection.", groups = { "FILENAME_LINES", "FIELDS" } )
+@InjectionSupported( localizationPrefix = "TextFileInput.Injection.", groups = { "FILENAME_LINES", "FIELDS", "FILTERS" } )
 public class TextFileInputMeta extends BaseFileInputStepMeta implements StepMetaInterface {
   private static Class<?> PKG = TextFileInputMeta.class; // for i18n purposes, needed by Translator2!! TODO: check i18n
                                                          // for base
@@ -95,92 +95,121 @@ public class TextFileInputMeta extends BaseFileInputStepMeta implements StepMeta
     public String separator;
 
     /** String used to enclose separated fields (") */
+    @Injection( name = "ENCLOSURE" )
     public String enclosure;
 
     /** Switch to allow breaks (CR/LF) in Enclosures */
+    @Injection( name = "BREAK_IN_ENCLOSURE" )
     public boolean breakInEnclosureAllowed;
 
     /** Escape character used to escape the enclosure String (\) */
+    @Injection( name = "ESCAPE_CHAR" )
     public String escapeCharacter;
 
     /** Flag indicating that the file contains one header line that should be skipped. */
+    @Injection( name = "HEADER_PRESENT" )
     public boolean header;
 
     /** The number of header lines, defaults to 1 */
+    @Injection( name = "NR_HEADER_LINES" )
     public int nrHeaderLines;
 
     /** Flag indicating that the file contains one footer line that should be skipped. */
+    @Injection( name = "HAS_FOOTER" )
     public boolean footer;
 
     /** The number of footer lines, defaults to 1 */
+    @Injection( name = "NR_FOOTER_LINES" )
     public int nrFooterLines;
 
     /** Flag indicating that a single line is wrapped onto one or more lines in the text file. */
+    @Injection( name = "HAS_WRAPPED_LINES" )
     public boolean lineWrapped;
 
     /** The number of times the line wrapped */
+    @Injection( name = "NR_WRAPS" )
     public int nrWraps;
 
     /** Flag indicating that the text-file has a paged layout. */
+    @Injection( name = "HAS_PAGED_LAYOUT" )
     public boolean layoutPaged;
 
     /** The number of lines to read per page */
+    @Injection( name = "NR_LINES_PER_PAGE" )
     public int nrLinesPerPage;
 
     /** The number of lines in the document header */
+    @Injection( name = "NR_DOC_HEADER_LINES" )
     public int nrLinesDocHeader;
 
     /** Type of compression being used */
+    @Injection( name = "COMPRESSION_TYPE" )
     public String fileCompression;
 
     /** Flag indicating that we should skip all empty lines */
+    @Injection( name = "NO_EMPTY_LINES" )
     public boolean noEmptyLines;
 
     /** Flag indicating that we should include the filename in the output */
+    @Injection( name = "INCLUDE_FILENAME" )
     public boolean includeFilename;
 
     /** The name of the field in the output containing the filename */
+    @Injection( name = "FILENAME_FIELD" )
     public String filenameField;
 
     /** Flag indicating that a row number field should be included in the output */
+    @Injection( name = "INCLUDE_ROW_NUMBER" )
     public boolean includeRowNumber;
 
     /** The name of the field in the output containing the row number */
+    @Injection( name = "ROW_NUMBER_FIELD" )
     public String rowNumberField;
 
     /** Flag indicating row number is per file */
+    @Injection( name = "ROW_NUMBER_BY_FILE" )
     public boolean rowNumberByFile;
 
     /** The file format: DOS or UNIX or mixed */
+    @Injection( name = "FILE_FORMAT" )
     public String fileFormat;
 
     /** The encoding to use for reading: null or empty string means system default encoding */
+    @Injection( name = "ENCODING" )
     public String encoding;
 
     /** The maximum number or lines to read */
-    public long rowLimit;
+    @Injection( name = "ROW_LIMIT" )
+    public long rowLimit=-1;
 
     /** Indicate whether or not we want to date fields strictly according to the format or lenient */
+    @Injection( name = "DATE_FORMAT_LENIENT" )
     public boolean dateFormatLenient;
 
     /** Specifies the Locale of the Date format, null means the default */
+    @Injection( name = "DATE_FORMAT_LOCALE" )
     public Locale dateFormatLocale;
 
   }
 
   /** The filters to use... */
+  @InjectionDeep
   private TextFileFilter[] filter = {};
 
   /** The name of the field that will contain the number of errors in the row */
+  @Injection(name="ERROR_COUNT_FIELD")
   private String errorCountField;
 
   /** The name of the field that will contain the names of the fields that generated errors, separated by , */
+  @Injection(name="ERROR_FIELDS_FIELD")
   private String errorFieldsField;
 
   /** The name of the field that will contain the error texts, separated by CR */
+  @Injection(name="ERROR_TEXT_FIELD")
   private String errorTextField;
 
   /** If error line are skipped, you can replay without introducing doubles. */
+  @Injection(name="ERROR_LINES_SKIPPED")
   private boolean errorLineSkipped;
 
   /** The step to accept filenames from */
@@ -1215,11 +1244,6 @@ public class TextFileInputMeta extends BaseFileInputStepMeta implements StepMeta
   @Override
   public boolean supportsErrorHandling() {
     return errorHandling.errorIgnored && errorHandling.skipBadFiles;
-  }
-
-  @Override
-  public StepMetaInjectionInterface getStepMetaInjectionInterface() {
-    return new TextFileInputMetaInjection( this );
   }
 
   @VisibleForTesting

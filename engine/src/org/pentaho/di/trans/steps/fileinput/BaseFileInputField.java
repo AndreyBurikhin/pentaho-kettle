@@ -31,6 +31,7 @@ import java.util.Date;
 
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.gui.TextFileInputFieldInterface;
+import org.pentaho.di.core.injection.Injection;
 import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
@@ -41,19 +42,46 @@ import org.pentaho.di.core.row.ValueMetaInterface;
  * @since 19-04-2004
  */
 public class BaseFileInputField implements Cloneable, TextFileInputFieldInterface {
+  @Injection( name = "FIELD_NAME", group="FIELDS" )
   private String name;
-  private int position;
-  private int length;
+  
+  @Injection( name = "FIELD_POSITION", group="FIELDS" )
+  private int position=-1;
+  
+  @Injection( name = "FIELD_LENGTH", group="FIELDS" )
+  private int length=-1;
+  
+  @Injection( name = "FIELD_TYPE", group="FIELDS" )
   private int type;
+  
+  @Injection( name = "FIELD_IGNORE", group="FIELDS" )
   private boolean ignore;
+  
+  @Injection( name = "FIELD_FORMAT", group="FIELDS" )
   private String format;
+  
+  @Injection( name = "FIELD_TRIM_TYPE", group="FIELDS" )
   private int trimtype;
+  
+  @Injection( name = "FIELD_PRECISION", group="FIELDS" )
   private int precision;
+  
+  @Injection( name = "FIELD_CURRENCY", group="FIELDS" )
   private String currencySymbol;
+  
+  @Injection( name = "FIELD_DECIMAL", group="FIELDS" )
   private String decimalSymbol;
+  
+  @Injection( name = "FIELD_GROUP", group="FIELDS" )
   private String groupSymbol;
+  
+  @Injection( name = "FIELD_REPEAT", group="FIELDS" )
   private boolean repeat;
+  
+  @Injection( name = "FIELD_NULL_STRING", group="FIELDS" )
   private String nullString;
+  
+  @Injection( name = "FIELD_IF_NULL", group="FIELDS" )
   private String ifNullValue;
 
   private String[] samples;
