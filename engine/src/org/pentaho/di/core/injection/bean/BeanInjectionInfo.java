@@ -12,7 +12,6 @@ import org.pentaho.di.i18n.BaseMessages;
 
 /**
  * Storage for bean annotations info for Metadata Injection and Load/Save.
- *
  */
 public class BeanInjectionInfo {
   private final Class<?> clazz;
@@ -21,7 +20,6 @@ public class BeanInjectionInfo {
   private List<Group> groups = new ArrayList<>();
 
   public static boolean isInjectionSupported( Class<?> clazz ) {
-
     InjectionSupported annotation = clazz.getAnnotation( InjectionSupported.class );
     return annotation != null;
   }
@@ -34,7 +32,7 @@ public class BeanInjectionInfo {
     }
 
     for ( String group : clazzAnnotation.groups() ) {
-      groups.add( new Group(group) );
+      groups.add( new Group( group ) );
     }
 
     BeanLevelInfo root = new BeanLevelInfo();
@@ -43,6 +41,10 @@ public class BeanInjectionInfo {
 
     properties = Collections.unmodifiableMap( properties );
     groups = Collections.unmodifiableList( groups );
+  }
+
+  public String getLocalizationPrefix() {
+    return clazzAnnotation.localizationPrefix();
   }
 
   public Map<String, Property> getProperties() {
@@ -54,42 +56,27 @@ public class BeanInjectionInfo {
   }
 
   protected void addInjectionProperty( Injection metaInj, BeanLevelInfo leaf ) {
-    Property prop = new Property(metaInj.name(),metaInj.group(),leaf.createCallStack());
+    Property prop = new Property( metaInj.name(), metaInj.group(), leaf.createCallStack() );
     properties.put( prop.name, prop );
-    // BeanLevelInfo p = leaf.parent;
-    // while ( p != null ) {
-    // p = p.parent;
-    // }
   }
-
-  // private String extractIndexes( String propName, List<Integer> extractedIndexes ) {
-  // Matcher m = RE_INDEX.matcher( propName );
-  //
-  // boolean contains = m.find();
-  // if ( !contains ) {
-  // return propName;
-  // }
-  //
-  // StringBuffer sb = new StringBuffer( propName.length() );
-  // do {
-  // String orig = propName.substring( m.start() + 1, m.end() - 1 );
-  // extractedIndexes.add( Integer.parseInt( orig ) );
-  // m.appendReplacement( sb, "[]" );
-  // contains = m.find();
-  // } while ( contains );
-  // m.appendTail( sb );
-  // return sb.toString();
-  // }
 
   public class Property {
     private final String name;
     private final String groupName;
     protected final List<BeanLevelInfo> path;
+    protected final int pathArraysCount;
 
     public Property( String name, String groupName, List<BeanLevelInfo> path ) {
       this.name = name;
       this.groupName = groupName;
       this.path = path;
+      int ac = 0;
+      for ( BeanLevelInfo level : path ) {
+        if ( level.array ) {
+          ac++;
+        }
+      }
+      pathArraysCount = ac;
     }
 
     public String getName() {
@@ -99,7 +86,6 @@ public class BeanInjectionInfo {
     public String getGroupName() {
       return groupName;
     }
-
 
     public String getDescription() {
       return BaseMessages.getString( clazz, clazzAnnotation.localizationPrefix() + name );

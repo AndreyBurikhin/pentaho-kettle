@@ -6,12 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Field that support injection should be marked as this annotation.
+ * Bean inside metadata should be marked by this annotation for introspect it for injection annotations find.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.METHOD } )
-public @interface Injection {
-  String name();
+public @interface InjectionDeep {
 
-  String group() default "";
 }

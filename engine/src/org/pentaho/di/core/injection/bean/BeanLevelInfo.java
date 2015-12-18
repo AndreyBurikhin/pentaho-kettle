@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.pentaho.di.core.injection.Injection;
+import org.pentaho.di.core.injection.InjectionDeep;
 
 /**
  * Storage for one step on the bean deep level.
@@ -20,15 +21,8 @@ class BeanLevelInfo {
   public Field field;
   /** Flag for mark array. */
   public boolean array;
-  /** Annotation name. TODO move outside. */
-  public String annotationName;
 
   public void init( BeanInjectionInfo info ) {
-    if ( String.class.isAssignableFrom( leafClass ) || int.class.isAssignableFrom( leafClass ) || long.class
-        .isAssignableFrom( leafClass ) ) {
-      // simple classes
-      return;
-    }
     for ( Field f : leafClass.getDeclaredFields() ) {
       if ( f.isSynthetic() || f.isEnumConstant() || Modifier.isStatic( f.getModifiers() ) ) {
         // fields can't contain real data
@@ -47,8 +41,8 @@ class BeanLevelInfo {
       Injection metaInj = f.getAnnotation( Injection.class );
       if ( metaInj != null ) {
         info.addInjectionProperty( metaInj, leaf );
-        
-      } else {
+      } else if ( f.isAnnotationPresent( InjectionDeep.class ) ) {
+        // introspect deeper
         leaf.init( info );
       }
     }

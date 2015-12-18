@@ -26,10 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.injection.bean.BeanInjectionInfo;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.BaseStepData;
 import org.pentaho.di.trans.step.StepDataInterface;
 import org.pentaho.di.trans.step.StepMetaInjectionInterface;
+import org.pentaho.di.trans.step.StepMetaInterface;
 
 /**
  * @author Matt
@@ -38,6 +40,7 @@ import org.pentaho.di.trans.step.StepMetaInjectionInterface;
 public class MetaInjectData extends BaseStepData implements StepDataInterface {
   public TransMeta transMeta;
   public Map<String, StepMetaInjectionInterface> stepInjectionMap;
+  public Map<String, StepMetaInterface> stepInjectionMetasMap;
   public Map<String, List<RowMetaAndData>> rowMap;
   public boolean streaming;
   public String streamingSourceStepname;
