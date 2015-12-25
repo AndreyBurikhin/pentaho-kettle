@@ -42,8 +42,14 @@ import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
+import org.pentaho.di.repository.RepositoryDirectory;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.repository.StringObjectId;
+import org.pentaho.di.resource.ResourceDefinition;
+import org.pentaho.di.resource.ResourceEntry;
+import org.pentaho.di.resource.ResourceNamingInterface;
+import org.pentaho.di.resource.ResourceReference;
+import org.pentaho.di.resource.ResourceEntry.ResourceType;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
@@ -491,6 +497,83 @@ public class MetaInjectMeta extends BaseStepMeta implements StepMetaInterface, S
     mappingTransMeta.setFilename( mappingTransMeta.getFilename() );
 
     return mappingTransMeta;
+  }
+
+  /**
+   * package-local visibility for testing purposes
+   */
+    TransMeta loadTransformationMeta( Repository rep, VariableSpace space ) throws KettleException {
+    return MetaInjectMeta.loadTransformationMeta( this, repository, null, space );
+  }
+
+  @Override
+  public List<ResourceReference> getResourceDependencies( TransMeta transMeta, StepMeta stepInfo ) {
+    List<ResourceReference> references = new ArrayList<ResourceReference>( 5 );
+    String realFilename = transMeta.environmentSubstitute( fileName );
+    String realTransname = transMeta.environmentSubstitute( transName );
+    ResourceReference reference = new ResourceReference( stepInfo );
+    references.add( reference );
+
+    if ( !Const.isEmpty( realFilename ) ) {
+      // Add the filename to the references, including a reference to this step
+      // meta data.
+      //
+      reference.getEntries().add( new ResourceEntry( realFilename, ResourceType.ACTIONFILE ) );
+    } else if ( !Const.isEmpty( realTransname ) ) {
+      // Add the filename to the references, including a reference to this step
+      // meta data.
+      //
+      reference.getEntries().add( new ResourceEntry( realTransname, ResourceType.ACTIONFILE ) );
+    }
+    return references;
+  }
+  
+  @Override
+  public String exportResources( VariableSpace space, Map<String, ResourceDefinition> definitions,
+      ResourceNamingInterface resourceNamingInterface, Repository repository, IMetaStore metaStore )
+        throws KettleException {
+    try {
+      // Try to load the transformation from repository or file.
+      // Modify this recursively too...
+      //
+      // NOTE: there is no need to clone this step because the caller is
+      // responsible for this.
+      //
+      // First load the executor transformation metadata...
+      //
+      TransMeta executorTransMeta = loadTransformationMeta( repository, space );
+
+      // Also go down into the mapping transformation and export the files
+      // there. (mapping recursively down)
+      //
+      String proposedNewFilename =
+          executorTransMeta.exportResources( executorTransMeta, definitions, resourceNamingInterface, repository,
+              metaStore );
+
+      // To get a relative path to it, we inject
+      // ${Internal.Transformation.Filename.Directory}
+      //
+      String newFilename =
+          "${" + Const.INTERNAL_VARIABLE_TRANSFORMATION_FILENAME_DIRECTORY + "}/" + proposedNewFilename;
+
+      // Set the correct filename inside the XML.
+      //
+      executorTransMeta.setFilename( newFilename );
+
+      // exports always reside in the root directory, in case we want to turn
+      // this into a file repository...
+      //
+      executorTransMeta.setRepositoryDirectory( new RepositoryDirectory() );
+
+      // change it in the entry
+      //
+      fileName = newFilename;
+
+      return proposedNewFilename;
+    } catch ( Exception e ) {
+      throw new KettleException( BaseMessages.getString( PKG, "MetaInjectMeta.Exception.UnableToLoadTrans",
+          fileName ) );
+    }
   }
 
   @Override
