@@ -213,7 +213,7 @@ public class FieldSplitterDialog extends BaseStepDialog implements StepDialogInt
 
     setButtonPositions( new Button[] { wOK, wCancel }, margin, null );
 
-    final int fieldsRows = input.getFieldName().length;
+    final int fieldsRows = input.getSplitFields().length;
 
     final ColumnInfo[] colinf =
       new ColumnInfo[] {
@@ -343,41 +343,41 @@ public class FieldSplitterDialog extends BaseStepDialog implements StepDialogInt
       wEnclosure.setText( input.getEnclosure() );
     }
 
-    for ( int i = 0; i < input.getFieldName().length; i++ ) {
+    for ( int i = 0; i < input.getSplitFields().length; i++ ) {
       final TableItem ti = wFields.table.getItem( i );
-      if ( input.getFieldName()[i] != null ) {
-        ti.setText( 1, input.getFieldName()[i] );
+      if ( input.getSplitFields()[i].getFieldName() != null ) {
+        ti.setText( 1, input.getSplitFields()[i].getFieldName() );
       }
-      if ( input.getFieldID()[i] != null ) {
-        ti.setText( 2, input.getFieldID()[i] );
+      if ( input.getSplitFields()[i].getFieldID() != null ) {
+        ti.setText( 2, input.getSplitFields()[i].getFieldID() );
       }
-      ti.setText( 3, input.getFieldRemoveID()[i] ? "Y" : "N" );
-      ti.setText( 4, ValueMeta.getTypeDesc( input.getFieldType()[i] ) );
-      if ( input.getFieldLength()[i] >= 0 ) {
-        ti.setText( 5, "" + input.getFieldLength()[i] );
+      ti.setText( 3, input.getSplitFields()[i].getFieldRemoveID() ? "Y" : "N" );
+      ti.setText( 4, ValueMeta.getTypeDesc( input.getSplitFields()[i].getFieldType() ) );
+      if ( input.getSplitFields()[i].getFieldLength() >= 0 ) {
+        ti.setText( 5, "" + input.getSplitFields()[i].getFieldLength() );
       }
-      if ( input.getFieldPrecision()[i] >= 0 ) {
-        ti.setText( 6, "" + input.getFieldPrecision()[i] );
+      if ( input.getSplitFields()[i].getFieldPrecision() >= 0 ) {
+        ti.setText( 6, "" + input.getSplitFields()[i].getFieldPrecision() );
       }
-      if ( input.getFieldFormat()[i] != null ) {
-        ti.setText( 7, input.getFieldFormat()[i] );
+      if ( input.getSplitFields()[i].getFieldFormat() != null ) {
+        ti.setText( 7, input.getSplitFields()[i].getFieldFormat() );
       }
-      if ( input.getFieldGroup()[i] != null ) {
-        ti.setText( 8, input.getFieldGroup()[i] );
+      if ( input.getSplitFields()[i].getFieldGroup() != null ) {
+        ti.setText( 8, input.getSplitFields()[i].getFieldGroup() );
       }
-      if ( input.getFieldDecimal()[i] != null ) {
-        ti.setText( 9, input.getFieldDecimal()[i] );
+      if ( input.getSplitFields()[i].getFieldDecimal() != null ) {
+        ti.setText( 9, input.getSplitFields()[i].getFieldDecimal() );
       }
-      if ( input.getFieldCurrency()[i] != null ) {
-        ti.setText( 10, input.getFieldCurrency()[i] );
+      if ( input.getSplitFields()[i].getFieldCurrency() != null ) {
+        ti.setText( 10, input.getSplitFields()[i].getFieldCurrency() );
       }
-      if ( input.getFieldNullIf()[i] != null ) {
-        ti.setText( 11, input.getFieldNullIf()[i] );
+      if ( input.getSplitFields()[i].getFieldNullIf() != null ) {
+        ti.setText( 11, input.getSplitFields()[i].getFieldNullIf() );
       }
-      if ( input.getFieldIfNull()[i] != null ) {
-        ti.setText( 12, input.getFieldIfNull()[i] );
+      if ( input.getSplitFields()[i].getFieldIfNull() != null ) {
+        ti.setText( 12, input.getSplitFields()[i].getFieldIfNull() );
       }
-      ti.setText( 13, ValueMeta.getTrimTypeDesc( input.getFieldTrimType()[i] ) );
+      ti.setText( 13, ValueMeta.getTrimTypeDesc( input.getSplitFields()[i].getFieldTrimType() ) );
     }
     wFields.setRowNums();
     wFields.optWidth( true );
@@ -409,21 +409,21 @@ public class FieldSplitterDialog extends BaseStepDialog implements StepDialogInt
     input.allocate( nrfields );
 
     //CHECKSTYLE:Indentation:OFF
-    for ( int i = 0; i < input.getFieldName().length; i++ ) {
+    for ( int i = 0; i < input.getSplitFields().length; i++ ) {
       final TableItem ti = wFields.getNonEmpty( i );
-      input.getFieldName()[i] = ti.getText( 1 );
-      input.getFieldID()[i] = ti.getText( 2 );
-      input.getFieldRemoveID()[i] = "Y".equalsIgnoreCase( ti.getText( 3 ) );
-      input.getFieldType()[i] = ValueMeta.getType( ti.getText( 4 ) );
-      input.getFieldLength()[i] = Const.toInt( ti.getText( 5 ), -1 );
-      input.getFieldPrecision()[i] = Const.toInt( ti.getText( 6 ), -1 );
-      input.getFieldFormat()[i] = ti.getText( 7 );
-      input.getFieldGroup()[i] = ti.getText( 8 );
-      input.getFieldDecimal()[i] = ti.getText( 9 );
-      input.getFieldCurrency()[i] = ti.getText( 10 );
-      input.getFieldNullIf()[i] = ti.getText( 11 );
-      input.getFieldIfNull()[i] = ti.getText( 12 );
-      input.getFieldTrimType()[i] = ValueMeta.getTrimTypeByDesc( ti.getText( 13 ) );
+      input.getSplitFields()[i].setFieldName( ti.getText( 1 ) );
+      input.getSplitFields()[i].setFieldID( ti.getText( 2 ) );
+      input.getSplitFields()[i].setFieldRemoveID( "Y".equalsIgnoreCase( ti.getText( 3 ) ) );
+      input.getSplitFields()[i].setFieldType( ValueMeta.getType( ti.getText( 4 ) ) );
+      input.getSplitFields()[i].setFieldLength( Const.toInt( ti.getText( 5 ), -1 ) );
+      input.getSplitFields()[i].setFieldPrecision( Const.toInt( ti.getText( 6 ), -1 ) );
+      input.getSplitFields()[i].setFieldFormat( ti.getText( 7 ) );
+      input.getSplitFields()[i].setFieldGroup( ti.getText( 8 ) );
+      input.getSplitFields()[i].setFieldDecimal( ti.getText( 9 ) );
+      input.getSplitFields()[i].setFieldCurrency( ti.getText( 10 ) );
+      input.getSplitFields()[i].setFieldNullIf( ti.getText( 11 ) );
+      input.getSplitFields()[i].setFieldIfNull( ti.getText( 12 ) );
+      input.getSplitFields()[i].setFieldTrimType( ValueMeta.getTrimTypeByDesc( ti.getText( 13 ) ) );
     }
 
     dispose();

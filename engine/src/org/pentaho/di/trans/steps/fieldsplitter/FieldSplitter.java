@@ -90,7 +90,7 @@ public class FieldSplitter extends BaseStep implements StepInterface {
     // reserve room
     Object[] outputRow = RowDataUtil.allocateRowData( data.outputMeta.size() );
 
-    int nrExtraFields = meta.getFieldID().length - 1;
+    int nrExtraFields = meta.getSplitFields().length - 1;
 
     System.arraycopy( r, 0, outputRow, 0, data.fieldnr );
     System.arraycopy( r, data.fieldnr + 1, outputRow, data.fieldnr + 1 + nrExtraFields,
@@ -100,9 +100,9 @@ public class FieldSplitter extends BaseStep implements StepInterface {
     //
 
     // Named values info.id[0] not filled in!
-    final boolean selectFieldById = ( meta.getFieldID().length > 0 )
-      && ( meta.getFieldID()[ 0 ] != null )
-      && ( meta.getFieldID()[ 0 ].length() > 0 );
+    final boolean selectFieldById = ( meta.getSplitFields().length > 0 )
+      && ( meta.getSplitFields()[ 0 ].getFieldID() != null )
+      && ( meta.getSplitFields()[ 0 ].getFieldID().length() > 0 );
 
     if ( log.isDebug() ) {
       if ( selectFieldById ) {
@@ -115,14 +115,14 @@ public class FieldSplitter extends BaseStep implements StepInterface {
     String valueToSplit = data.previousMeta.getString( r, data.fieldnr );
     String[] valueParts = Const.splitString( valueToSplit, data.delimiter, data.enclosure );
     int prev = 0;
-    for ( int i = 0; i < meta.getFieldName().length; i++ ) {
+    for ( int i = 0; i < meta.getSplitFields().length; i++ ) {
       String rawValue = null;
       if ( selectFieldById ) {
         for ( String part : valueParts ) {
-          if ( part.startsWith( meta.getFieldID()[ i ] ) ) {
+          if ( part.startsWith( meta.getSplitFields()[ i ].getFieldID() ) ) {
             // Optionally remove the id
-            if ( meta.getFieldRemoveID()[ i ] ) {
-              rawValue = part.substring( meta.getFieldID()[ i ].length() );
+            if ( meta.getSplitFields()[ i ].getFieldRemoveID() ) {
+              rawValue = part.substring( meta.getSplitFields()[ i ].getFieldID().length() );
             } else {
               rawValue = part;
             }
@@ -153,8 +153,8 @@ public class FieldSplitter extends BaseStep implements StepInterface {
           rawValue = null;
         }
         value =
-          valueMeta.convertDataFromString( rawValue, conversionValueMeta, meta.getFieldNullIf()[ i ],
-            meta.getFieldIfNull()[ i ], meta.getFieldTrimType()[ i ] );
+          valueMeta.convertDataFromString( rawValue, conversionValueMeta, meta.getSplitFields()[ i ].getFieldNullIf(),
+            meta.getSplitFields()[ i ].getFieldIfNull(), meta.getSplitFields()[ i ].getFieldTrimType() );
       } catch ( Exception e ) {
         throw new KettleValueException( BaseMessages.getString(
           PKG, "FieldSplitter.Log.ErrorConvertingSplitValue", rawValue, meta.getSplitField() + "]!" ), e );

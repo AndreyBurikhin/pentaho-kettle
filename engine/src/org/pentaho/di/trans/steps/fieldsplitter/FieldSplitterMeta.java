@@ -33,6 +33,7 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.core.injection.Injection;
+import org.pentaho.di.core.injection.InjectionDeep;
 import org.pentaho.di.core.injection.InjectionSupported;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
@@ -119,56 +120,184 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
   /** Ignore delimiter inside pairs of the enclosure string */
   @Injection( name = "ENCLOSURE" )
   private String enclosure;
+  
+  @InjectionDeep
+  private SplitField[] splitFields;
 
-  /** new field names */
-  @Injection( name = "NAME", group = "FIELDS" )
-  private String[] fieldName;
+  public static class SplitField implements Cloneable {
+    /** new field names */
+    @Injection( name = "NAME", group = "FIELDS" )
+    private String fieldName;
 
-  /** Field ID's to scan for */
-  @Injection( name = "ID", group = "FIELDS" )
-  private String[] fieldID;
+    /** Field ID's to scan for */
+    @Injection( name = "ID", group = "FIELDS" )
+    private String fieldID;
 
-  /** flag: remove ID */
-  @Injection( name = "REMOVE_ID", group = "FIELDS" )
-  private boolean[] fieldRemoveID;
+    /** flag: remove ID */
+    @Injection( name = "REMOVE_ID", group = "FIELDS" )
+    private boolean fieldRemoveID;
 
-  /** type of new field */
-  private int[] fieldType;
+    /** type of new field */
+    private int fieldType;
 
-  /** formatting mask to convert value */
-  @Injection( name = "FORMAT", group = "FIELDS" )
-  private String[] fieldFormat;
+    /** formatting mask to convert value */
+    @Injection( name = "FORMAT", group = "FIELDS" )
+    private String fieldFormat;
 
-  /** Grouping symbol */
-  @Injection( name = "GROUPING", group = "FIELDS" )
-  private String[] fieldGroup;
+    /** Grouping symbol */
+    @Injection( name = "GROUPING", group = "FIELDS" )
+    private String fieldGroup;
 
-  /** Decimal point . or , */
-  @Injection( name = "DECIMAL", group = "FIELDS" )
-  private String[] fieldDecimal;
+    /** Decimal point . or , */
+    @Injection( name = "DECIMAL", group = "FIELDS" )
+    private String fieldDecimal;
 
-  /** Currency symbol */
-  @Injection( name = "CURRENCY", group = "FIELDS" )
-  private String[] fieldCurrency;
+    /** Currency symbol */
+    @Injection( name = "CURRENCY", group = "FIELDS" )
+    private String fieldCurrency;
 
-  /** Length of field */
-  @Injection( name = "LENGTH", group = "FIELDS" )
-  private int[] fieldLength;
+    /** Length of field */
+    @Injection( name = "LENGTH", group = "FIELDS" )
+    private int fieldLength;
 
-  /** Precision of field */
-  @Injection( name = "PRECISION", group = "FIELDS" )
-  private int[] fieldPrecision;
+    /** Precision of field */
+    @Injection( name = "PRECISION", group = "FIELDS" )
+    private int fieldPrecision;
 
-  /** Replace this value with a null */
-  @Injection( name = "NULL_IF", group = "FIELDS" )
-  private String[] fieldNullIf;
+    /** Replace this value with a null */
+    @Injection( name = "NULL_IF", group = "FIELDS" )
+    private String fieldNullIf;
 
-  /** Default value in case no value was found (ID option) */
-  @Injection( name = "DEFAULT", group = "FIELDS" )
-  private String[] fieldIfNull;
+    /** Default value in case no value was found (ID option) */
+    @Injection( name = "DEFAULT", group = "FIELDS" )
+    private String fieldIfNull;
 
-  /** Perform trimming of this type on the fieldName during lookup and storage */
-  private int[] fieldTrimType;
+    /** Perform trimming of this type on the fieldName during lookup and storage */
+    private int fieldTrimType;
+    
+    public String getFieldName() {
+      return fieldName;
+    }
+
+    public void setFieldName( final String fieldName ) {
+      this.fieldName = fieldName;
+    }
+
+    public String getFieldID() {
+      return fieldID;
+    }
+
+    public void setFieldID( final String fieldID ) {
+      this.fieldID = fieldID;
+    }
+
+    public boolean getFieldRemoveID() {
+      return fieldRemoveID;
+    }
+
+    public void setFieldRemoveID( final boolean fieldRemoveID ) {
+      this.fieldRemoveID = fieldRemoveID;
+    }
+
+    public int getFieldType() {
+      return fieldType;
+    }
+
+    public void setFieldType( final int fieldType ) {
+      this.fieldType = fieldType;
+    }
+
+    public String getFieldFormat() {
+      return fieldFormat;
+    }
+
+    public void setFieldFormat( final String fieldFormat ) {
+      this.fieldFormat = fieldFormat;
+    }
+
+    public String getFieldGroup() {
+      return fieldGroup;
+    }
+
+    public void setFieldGroup( final String fieldGroup ) {
+      this.fieldGroup = fieldGroup;
+    }
+
+    public String getFieldDecimal() {
+      return fieldDecimal;
+    }
+
+    public void setFieldDecimal( final String fieldDecimal ) {
+      this.fieldDecimal = fieldDecimal;
+    }
+
+    public String getFieldCurrency() {
+      return fieldCurrency;
+    }
+
+    public void setFieldCurrency( final String fieldCurrency ) {
+      this.fieldCurrency = fieldCurrency;
+    }
+
+    public int getFieldLength() {
+      return fieldLength;
+    }
+
+    public void setFieldLength( final int fieldLength ) {
+      this.fieldLength = fieldLength;
+    }
+
+    public int getFieldPrecision() {
+      return fieldPrecision;
+    }
+
+    public void setFieldPrecision( final int fieldPrecision ) {
+      this.fieldPrecision = fieldPrecision;
+    }
+
+    public String getFieldNullIf() {
+      return fieldNullIf;
+    }
+
+    public void setFieldNullIf( final String fieldNullIf ) {
+      this.fieldNullIf = fieldNullIf;
+    }
+
+    public String getFieldIfNull() {
+      return fieldIfNull;
+    }
+
+    public void setFieldIfNull( final String fieldIfNull ) {
+      this.fieldIfNull = fieldIfNull;
+    }
+
+    public int getFieldTrimType() {
+      return fieldTrimType;
+    }
+
+    public void setFieldTrimType( final int fieldTrimType ) {
+      this.fieldTrimType = fieldTrimType;
+    }
+    
+    @Injection( name = "DATA_TYPE", group = "FIELDS" )
+    public void setFieldType( String value ) {
+      fieldType = ValueMeta.getType( value );
+    }
+
+    @Injection( name = "TRIM_TYPE", group = "FIELDS" )
+    public void setFieldTrimType( String value ) {
+      fieldTrimType = ValueMeta.getTrimTypeByCode( value );
+    }
+
+    public Object clone() {
+      try {
+        Object retval = super.clone();
+        return retval;
+      } catch ( CloneNotSupportedException e ) {
+        return null;
+      }
+    }
+  }
 
   public FieldSplitterMeta() {
     super(); // allocate BaseStepMeta
@@ -197,129 +326,13 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
   public void setEnclosure( final String enclosure ) {
     this.enclosure = enclosure;
   }
-
-  public String[] getFieldName() {
-    return fieldName;
+  
+  public SplitField[] getSplitFields() {
+    return splitFields;
   }
 
-  public void setFieldName( final String[] fieldName ) {
-    this.fieldName = fieldName;
-  }
-
-  public String[] getFieldID() {
-    return fieldID;
-  }
-
-  public void setFieldID( final String[] fieldID ) {
-    this.fieldID = fieldID;
-  }
-
-  public boolean[] getFieldRemoveID() {
-    return fieldRemoveID;
-  }
-
-  public void setFieldRemoveID( final boolean[] fieldRemoveID ) {
-    this.fieldRemoveID = fieldRemoveID;
-  }
-
-  public int[] getFieldType() {
-    return fieldType;
-  }
-
-  public void setFieldType( final int[] fieldType ) {
-    this.fieldType = fieldType;
-  }
-
-  public String[] getFieldFormat() {
-    return fieldFormat;
-  }
-
-  public void setFieldFormat( final String[] fieldFormat ) {
-    this.fieldFormat = fieldFormat;
-  }
-
-  public String[] getFieldGroup() {
-    return fieldGroup;
-  }
-
-  public void setFieldGroup( final String[] fieldGroup ) {
-    this.fieldGroup = fieldGroup;
-  }
-
-  public String[] getFieldDecimal() {
-    return fieldDecimal;
-  }
-
-  public void setFieldDecimal( final String[] fieldDecimal ) {
-    this.fieldDecimal = fieldDecimal;
-  }
-
-  public String[] getFieldCurrency() {
-    return fieldCurrency;
-  }
-
-  public void setFieldCurrency( final String[] fieldCurrency ) {
-    this.fieldCurrency = fieldCurrency;
-  }
-
-  public int[] getFieldLength() {
-    return fieldLength;
-  }
-
-  public void setFieldLength( final int[] fieldLength ) {
-    this.fieldLength = fieldLength;
-  }
-
-  public int[] getFieldPrecision() {
-    return fieldPrecision;
-  }
-
-  public void setFieldPrecision( final int[] fieldPrecision ) {
-    this.fieldPrecision = fieldPrecision;
-  }
-
-  public String[] getFieldNullIf() {
-    return fieldNullIf;
-  }
-
-  public void setFieldNullIf( final String[] fieldNullIf ) {
-    this.fieldNullIf = fieldNullIf;
-  }
-
-  public String[] getFieldIfNull() {
-    return fieldIfNull;
-  }
-
-  public void setFieldIfNull( final String[] fieldIfNull ) {
-    this.fieldIfNull = fieldIfNull;
-  }
-
-  public int[] getFieldTrimType() {
-    return fieldTrimType;
-  }
-
-  public void setFieldTrimType( final int[] fieldTrimType ) {
-    this.fieldTrimType = fieldTrimType;
-  }
-
-  @Injection( name = "DATA_TYPE", group = "FIELDS" )
-  public void setFieldType( int index, String value ) {
-    if ( fieldType == null ) {
-      fieldType = new int[index + 1];
-    } else if ( fieldType.length <= index ) {
-      Arrays.copyOf( fieldType, index + 1 );
-    }
-    fieldType[index] = ValueMeta.getType( value );
-  }
-
-  @Injection( name = "TRIM_TYPE", group = "FIELDS" )
-  public void setFieldTrimType( int index, String value ) {
-    if ( fieldTrimType == null ) {
-      fieldTrimType = new int[index + 1];
-    } else if ( fieldTrimType.length <= index ) {
-      Arrays.copyOf( fieldTrimType, index + 1 );
-    }
-    fieldTrimType[index] = ValueMeta.getTrimTypeByCode( value );
+  public void setSplitFields( SplitField[] splitFields ) {
+    this.splitFields = splitFields;
   }
 
   public void loadXML( Node stepnode, List<DatabaseMeta> databases, IMetaStore metaStore ) throws KettleXMLException {
@@ -327,42 +340,35 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
   }
 
   public void allocate( int nrfields ) {
-    fieldName = new String[nrfields];
-    fieldID = new String[nrfields];
-    fieldRemoveID = new boolean[nrfields];
-    fieldType = new int[nrfields];
-    fieldFormat = new String[nrfields];
-    fieldGroup = new String[nrfields];
-    fieldDecimal = new String[nrfields];
-    fieldCurrency = new String[nrfields];
-    fieldLength = new int[nrfields];
-    fieldPrecision = new int[nrfields];
-    fieldNullIf = new String[nrfields];
-    fieldIfNull = new String[nrfields];
-    fieldTrimType = new int[nrfields];
+    splitFields = new SplitField[nrfields];
+    for ( int i = 0; i < splitFields.length; i++ ) {
+      splitFields[i] = new SplitField();
+    }
   }
 
   public Object clone() {
     FieldSplitterMeta retval = (FieldSplitterMeta) super.clone();
 
-    final int nrfields = fieldName.length;
+    final int nrfields = splitFields.length;
 
     retval.allocate( nrfields );
 
     for ( int i = 0; i < nrfields; i++ ) {
-      retval.fieldName[i] = fieldName[i];
-      retval.fieldID[i] = fieldID[i];
-      retval.fieldRemoveID[i] = fieldRemoveID[i];
-      retval.fieldType[i] = fieldType[i];
-      retval.fieldLength[i] = fieldLength[i];
-      retval.fieldPrecision[i] = fieldPrecision[i];
-      retval.fieldFormat[i] = fieldFormat[i];
-      retval.fieldGroup[i] = fieldGroup[i];
-      retval.fieldDecimal[i] = fieldDecimal[i];
-      retval.fieldCurrency[i] = fieldCurrency[i];
-      retval.fieldNullIf[i] = fieldNullIf[i];
-      retval.fieldIfNull[i] = fieldIfNull[i];
-      retval.fieldTrimType[i] = fieldTrimType[i];
+      retval.splitFields[i] = (SplitField) splitFields[i].clone();
+      
+//      retval.fieldName[i] = fieldName[i];
+//      retval.fieldID[i] = fieldID[i];
+//      retval.fieldRemoveID[i] = fieldRemoveID[i];
+//      retval.fieldType[i] = fieldType[i];
+//      retval.fieldLength[i] = fieldLength[i];
+//      retval.fieldPrecision[i] = fieldPrecision[i];
+//      retval.fieldFormat[i] = fieldFormat[i];
+//      retval.fieldGroup[i] = fieldGroup[i];
+//      retval.fieldDecimal[i] = fieldDecimal[i];
+//      retval.fieldCurrency[i] = fieldCurrency[i];
+//      retval.fieldNullIf[i] = fieldNullIf[i];
+//      retval.fieldIfNull[i] = fieldIfNull[i];
+//      retval.fieldTrimType[i] = fieldTrimType[i];
     }
 
     return retval;
@@ -381,26 +387,27 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
 
       for ( int i = 0; i < nrfields; i++ ) {
         final Node fnode = XMLHandler.getSubNodeByNr( fields, "field", i );
-
-        fieldName[i] = XMLHandler.getTagValue( fnode, "name" );
-        fieldID[i] = XMLHandler.getTagValue( fnode, "id" );
+        splitFields[i] = new SplitField();
+        
+        splitFields[i].setFieldName( XMLHandler.getTagValue( fnode, "name" ) );
+        splitFields[i].setFieldID( XMLHandler.getTagValue( fnode, "id" ) );
         final String sidrem = XMLHandler.getTagValue( fnode, "idrem" );
         final String stype = XMLHandler.getTagValue( fnode, "type" );
-        fieldFormat[i] = XMLHandler.getTagValue( fnode, "format" );
-        fieldGroup[i] = XMLHandler.getTagValue( fnode, "group" );
-        fieldDecimal[i] = XMLHandler.getTagValue( fnode, "decimal" );
-        fieldCurrency[i] = XMLHandler.getTagValue( fnode, "currency" );
+        splitFields[i].setFieldFormat( XMLHandler.getTagValue( fnode, "format" ) );
+        splitFields[i].setFieldGroup( XMLHandler.getTagValue( fnode, "group" ) );
+        splitFields[i].setFieldDecimal( XMLHandler.getTagValue( fnode, "decimal" ) );
+        splitFields[i].setFieldCurrency( XMLHandler.getTagValue( fnode, "currency" ) );
         final String slen = XMLHandler.getTagValue( fnode, "length" );
         final String sprc = XMLHandler.getTagValue( fnode, "precision" );
-        fieldNullIf[i] = XMLHandler.getTagValue( fnode, "nullif" );
-        fieldIfNull[i] = XMLHandler.getTagValue( fnode, "ifnull" );
+        splitFields[i].setFieldNullIf( XMLHandler.getTagValue( fnode, "nullif" ) );
+        splitFields[i].setFieldIfNull( XMLHandler.getTagValue( fnode, "ifnull" ) );
         final String trim = XMLHandler.getTagValue( fnode, "trimtype" );
 
-        fieldRemoveID[i] = "Y".equalsIgnoreCase( sidrem );
-        fieldType[i] = ValueMeta.getType( stype );
-        fieldLength[i] = Const.toInt( slen, -1 );
-        fieldPrecision[i] = Const.toInt( sprc, -1 );
-        fieldTrimType[i] = ValueMeta.getTrimTypeByCode( trim );
+        splitFields[i].setFieldRemoveID( "Y".equalsIgnoreCase( sidrem ) );
+        splitFields[i].setFieldType( ValueMeta.getType( stype ) );
+        splitFields[i].setFieldLength( Const.toInt( slen, -1 ) );
+        splitFields[i].setFieldPrecision( Const.toInt( sprc, -1 ) );
+        splitFields[i].setFieldTrimType( ValueMeta.getTrimTypeByCode( trim ) );
       }
     } catch ( Exception e ) {
       throw new KettleXMLException( BaseMessages.getString(
@@ -425,16 +432,16 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
     }
 
     // Add the new fields at the place of the index --> replace!
-    for ( int i = 0; i < getFieldName().length; i++ ) {
+    for ( int i = 0; i < getSplitFields().length; i++ ) {
       try {
-        final ValueMetaInterface v = ValueMetaFactory.createValueMeta( getFieldName()[i], getFieldType()[i] );
-        v.setLength( getFieldLength()[i], getFieldPrecision()[i] );
+        final ValueMetaInterface v = ValueMetaFactory.createValueMeta( getSplitFields()[i].getFieldName(), getSplitFields()[i].getFieldType() );
+        v.setLength( getSplitFields()[i].getFieldLength(), getSplitFields()[i].getFieldPrecision() );
         v.setOrigin( name );
-        v.setConversionMask( getFieldFormat()[i] );
-        v.setDecimalSymbol( getFieldDecimal()[i] );
-        v.setGroupingSymbol( getFieldGroup()[i] );
-        v.setCurrencySymbol( getFieldCurrency()[i] );
-        v.setTrimType( getFieldTrimType()[i] );
+        v.setConversionMask( getSplitFields()[i].getFieldFormat() );
+        v.setDecimalSymbol( getSplitFields()[i].getFieldDecimal() );
+        v.setGroupingSymbol( getSplitFields()[i].getFieldGroup() );
+        v.setCurrencySymbol( getSplitFields()[i].getFieldCurrency() );
+        v.setTrimType( getSplitFields()[i].getFieldTrimType() );
         // TODO when implemented in UI
         // v.setDateFormatLenient(dateFormatLenient);
         // TODO when implemented in UI
@@ -463,22 +470,22 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
     retval.append( "   " ).append( XMLHandler.addTagValue( "enclosure", enclosure ) );
 
     retval.append( "    <fields>" );
-    for ( int i = 0; i < fieldName.length; i++ ) {
+    for ( int i = 0; i < splitFields.length; i++ ) {
       retval.append( "      <field>" );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "name", fieldName[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "id", fieldID[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "idrem", fieldRemoveID[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "type", ValueMeta.getTypeDesc( fieldType[i] ) ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "format", fieldFormat[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "group", fieldGroup[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "decimal", fieldDecimal[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "currency", fieldCurrency[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "length", fieldLength[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "precision", fieldPrecision[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "nullif", fieldNullIf[i] ) );
-      retval.append( "        " ).append( XMLHandler.addTagValue( "ifnull", fieldIfNull[i] ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "name", splitFields[i].getFieldName() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "id", splitFields[i].getFieldID( ) ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "idrem", splitFields[i].getFieldRemoveID() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "type", ValueMeta.getTypeDesc( splitFields[i].getFieldType() ) ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "format", splitFields[i].getFieldFormat() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "group", splitFields[i].getFieldGroup() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "decimal", splitFields[i].getFieldDecimal() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "currency", splitFields[i].getFieldCurrency() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "length", splitFields[i].getFieldLength() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "precision", splitFields[i].getFieldPrecision() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "nullif", splitFields[i].getFieldNullIf() ) );
+      retval.append( "        " ).append( XMLHandler.addTagValue( "ifnull", splitFields[i].getFieldIfNull() ) );
       retval.append( "        " ).append(
-        XMLHandler.addTagValue( "trimtype", ValueMeta.getTrimTypeCode( fieldTrimType[i] ) ) );
+        XMLHandler.addTagValue( "trimtype", ValueMeta.getTrimTypeCode( splitFields[i].getFieldTrimType() ) ) );
       retval.append( "      </field>" );
     }
     retval.append( "    </fields>" );
@@ -497,20 +504,21 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
       allocate( nrfields );
 
       for ( int i = 0; i < nrfields; i++ ) {
-        fieldName[i] = rep.getStepAttributeString( id_step, i, "field_name" );
-        fieldID[i] = rep.getStepAttributeString( id_step, i, "field_id" );
-        fieldRemoveID[i] = rep.getStepAttributeBoolean( id_step, i, "field_idrem" );
-        fieldType[i] = ValueMeta.getType( rep.getStepAttributeString( id_step, i, "field_type" ) );
-        fieldFormat[i] = rep.getStepAttributeString( id_step, i, "field_format" );
-        fieldGroup[i] = rep.getStepAttributeString( id_step, i, "field_group" );
-        fieldDecimal[i] = rep.getStepAttributeString( id_step, i, "field_decimal" );
-        fieldCurrency[i] = rep.getStepAttributeString( id_step, i, "field_currency" );
-        fieldLength[i] = (int) rep.getStepAttributeInteger( id_step, i, "field_length" );
-        fieldPrecision[i] = (int) rep.getStepAttributeInteger( id_step, i, "field_precision" );
-        fieldNullIf[i] = rep.getStepAttributeString( id_step, i, "field_nullif" );
-        fieldIfNull[i] = rep.getStepAttributeString( id_step, i, "field_ifnull" );
-        fieldTrimType[i] =
-          ValueMeta.getTrimTypeByCode( rep.getStepAttributeString( id_step, i, "field_trimtype" ) );
+        splitFields[i] = new SplitField();
+        splitFields[i].setFieldName( rep.getStepAttributeString( id_step, i, "field_name" ) );
+        splitFields[i].setFieldID( rep.getStepAttributeString( id_step, i, "field_id" ) );
+        splitFields[i].setFieldRemoveID( rep.getStepAttributeBoolean( id_step, i, "field_idrem" ) );
+        splitFields[i].setFieldType( ValueMeta.getType( rep.getStepAttributeString( id_step, i, "field_type" ) ) );
+        splitFields[i].setFieldFormat( rep.getStepAttributeString( id_step, i, "field_format" ) );
+        splitFields[i].setFieldGroup( rep.getStepAttributeString( id_step, i, "field_group" ) );
+        splitFields[i].setFieldDecimal( rep.getStepAttributeString( id_step, i, "field_decimal" ) );
+        splitFields[i].setFieldCurrency( rep.getStepAttributeString( id_step, i, "field_currency" ) );
+        splitFields[i].setFieldLength( (int) rep.getStepAttributeInteger( id_step, i, "field_length" ) );
+        splitFields[i].setFieldPrecision( (int) rep.getStepAttributeInteger( id_step, i, "field_precision" ) );
+        splitFields[i].setFieldNullIf( rep.getStepAttributeString( id_step, i, "field_nullif" ) );
+        splitFields[i].setFieldIfNull( rep.getStepAttributeString( id_step, i, "field_ifnull" ) );
+        splitFields[i].setFieldTrimType(
+          ValueMeta.getTrimTypeByCode( rep.getStepAttributeString( id_step, i, "field_trimtype" ) ) );
       }
     } catch ( Exception e ) {
       throw new KettleException( BaseMessages.getString(
@@ -524,21 +532,21 @@ public class FieldSplitterMeta extends BaseStepMeta implements StepMetaInterface
       rep.saveStepAttribute( id_transformation, id_step, "delimiter", delimiter );
       rep.saveStepAttribute( id_transformation, id_step, "enclosure", enclosure );
 
-      for ( int i = 0; i < fieldName.length; i++ ) {
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_name", fieldName[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_id", fieldID[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_idrem", fieldRemoveID[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_type", ValueMeta.getTypeDesc( fieldType[i] ) );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_format", fieldFormat[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_group", fieldGroup[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_decimal", fieldDecimal[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_currency", fieldCurrency[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_length", fieldLength[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_precision", fieldPrecision[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_nullif", fieldNullIf[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, "field_ifnull", fieldIfNull[i] );
+      for ( int i = 0; i < splitFields.length; i++ ) {
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_name", splitFields[i].getFieldName() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_id", splitFields[i].getFieldID() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_idrem", splitFields[i].getFieldRemoveID() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_type", ValueMeta.getTypeDesc( splitFields[i].getFieldType() ) );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_format", splitFields[i].getFieldFormat() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_group", splitFields[i].getFieldGroup() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_decimal", splitFields[i].getFieldDecimal() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_currency", splitFields[i].getFieldCurrency() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_length", splitFields[i].getFieldLength() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_precision", splitFields[i].getFieldPrecision() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_nullif", splitFields[i].getFieldNullIf() );
+        rep.saveStepAttribute( id_transformation, id_step, i, "field_ifnull", splitFields[i].getFieldIfNull() );
         rep.saveStepAttribute( id_transformation, id_step, i, "field_trimtype", ValueMeta
-          .getTrimTypeCode( fieldTrimType[i] ) );
+          .getTrimTypeCode( splitFields[i].getFieldTrimType() ) );
       }
     } catch ( Exception e ) {
       throw new KettleException( BaseMessages.getString(
