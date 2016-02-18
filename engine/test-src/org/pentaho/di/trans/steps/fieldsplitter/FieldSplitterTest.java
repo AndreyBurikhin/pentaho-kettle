@@ -43,6 +43,7 @@ import org.pentaho.di.core.row.value.ValueMetaString;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.step.StepMeta;
+import org.pentaho.di.trans.steps.fieldsplitter.FieldSplitterMeta.SplitField;
 import org.pentaho.di.trans.steps.mock.StepMockHelper;
 import org.pentaho.metastore.api.IMetaStore;
 
@@ -75,20 +76,41 @@ public class FieldSplitterTest {
     doCallRealMethod().when( processRowMeta ).getFields( any( RowMetaInterface.class ), anyString(),
         any( RowMetaInterface[].class ), any( StepMeta.class ), any( VariableSpace.class ), any( Repository.class ),
         any( IMetaStore.class ) );
-    doReturn( new String[] { "a", "b" } ).when( processRowMeta ).getFieldName();
-    doReturn( new int[] { ValueMetaInterface.TYPE_STRING, ValueMetaInterface.TYPE_STRING } ).when( processRowMeta )
-        .getFieldType();
-    doReturn( new String[] { "a=", "b=" } ).when( processRowMeta ).getFieldID();
-    doReturn( new boolean[] { false, false } ).when( processRowMeta ).getFieldRemoveID();
-    doReturn( new int[] { -1, -1 } ).when( processRowMeta ).getFieldLength();
-    doReturn( new int[] { -1, -1 } ).when( processRowMeta ).getFieldPrecision();
-    doReturn( new int[] { 0, 0 } ).when( processRowMeta ).getFieldTrimType();
-    doReturn( new String[] { null, null } ).when( processRowMeta ).getFieldFormat();
-    doReturn( new String[] { null, null } ).when( processRowMeta ).getFieldDecimal();
-    doReturn( new String[] { null, null } ).when( processRowMeta ).getFieldGroup();
-    doReturn( new String[] { null, null } ).when( processRowMeta ).getFieldCurrency();
-    doReturn( new String[] { null, null } ).when( processRowMeta ).getFieldNullIf();
-    doReturn( new String[] { null, null } ).when( processRowMeta ).getFieldIfNull();
+
+    SplitField[] splitFieds = new SplitField[2];
+    SplitField splitFied1 = new SplitField();
+    splitFied1.setFieldName( "a" );
+    splitFied1.setFieldType( ValueMetaInterface.TYPE_STRING );
+    splitFied1.setFieldID( "a=" );
+    splitFied1.setFieldRemoveID( false );
+    splitFied1.setFieldLength( -1 );
+    splitFied1.setFieldPrecision( -1 );
+    splitFied1.setFieldTrimType( 0 );
+    splitFied1.setFieldFormat( null );
+    splitFied1.setFieldDecimal( null );
+    splitFied1.setFieldGroup( null );
+    splitFied1.setFieldCurrency( null );
+    splitFied1.setFieldNullIf( null );
+    splitFied1.setFieldIfNull( null );
+    splitFieds[0] = splitFied1;
+
+    SplitField splitFied2 = new SplitField();
+    splitFied2.setFieldName( "b" );
+    splitFied2.setFieldType( ValueMetaInterface.TYPE_STRING );
+    splitFied2.setFieldID( "b=" );
+    splitFied2.setFieldRemoveID( false );
+    splitFied2.setFieldLength( -1 );
+    splitFied2.setFieldPrecision( -1 );
+    splitFied2.setFieldTrimType( 0 );
+    splitFied2.setFieldFormat( null );
+    splitFied2.setFieldDecimal( null );
+    splitFied2.setFieldGroup( null );
+    splitFied2.setFieldCurrency( null );
+    splitFied2.setFieldNullIf( null );
+    splitFied2.setFieldIfNull( null );
+    splitFieds[1] = splitFied2;
+    doReturn( splitFieds ).when( processRowMeta ).getSplitFields();
+
     doReturn( ";" ).when( processRowMeta ).getDelimiter();
 
     return processRowMeta;

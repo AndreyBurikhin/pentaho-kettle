@@ -55,69 +55,69 @@ public class FieldSplitterMetaInjectionTest extends BaseMetadataInjectionTest<Fi
     } );
     check( "NAME", new StringGetter() {
       public String get() {
-        return meta.getFieldName()[0];
+        return meta.getSplitFields()[0].getFieldName();
       }
     } );
     check( "ID", new StringGetter() {
       public String get() {
-        return meta.getFieldID()[0];
+        return meta.getSplitFields()[0].getFieldID();
       }
     } );
     check( "REMOVE_ID", new BooleanGetter() {
       public boolean get() {
-        return meta.getFieldRemoveID()[0];
+        return meta.getSplitFields()[0].getFieldRemoveID();
       }
     } );
     check( "FORMAT", new StringGetter() {
       public String get() {
-        return meta.getFieldFormat()[0];
+        return meta.getSplitFields()[0].getFieldFormat();
       }
     } );
     check( "GROUPING", new StringGetter() {
       public String get() {
-        return meta.getFieldGroup()[0];
+        return meta.getSplitFields()[0].getFieldGroup();
       }
     } );
     check( "DECIMAL", new StringGetter() {
       public String get() {
-        return meta.getFieldDecimal()[0];
+        return meta.getSplitFields()[0].getFieldDecimal();
       }
     } );
     check( "CURRENCY", new StringGetter() {
       public String get() {
-        return meta.getFieldCurrency()[0];
+        return meta.getSplitFields()[0].getFieldCurrency();
       }
     } );
     check( "LENGTH", new IntGetter() {
       public int get() {
-        return meta.getFieldLength()[0];
+        return meta.getSplitFields()[0].getFieldLength();
       }
     } );
     check( "PRECISION", new IntGetter() {
       public int get() {
-        return meta.getFieldPrecision()[0];
+        return meta.getSplitFields()[0].getFieldPrecision();
       }
     } );
     check( "NULL_IF", new StringGetter() {
       public String get() {
-        return meta.getFieldNullIf()[0];
+        return meta.getSplitFields()[0].getFieldNullIf();
       }
     } );
     check( "DEFAULT", new StringGetter() {
       public String get() {
-        return meta.getFieldIfNull()[0];
+        return meta.getSplitFields()[0].getFieldIfNull();
       }
     } );
 
     ValueMetaInterface mftt = new ValueMetaString( "f" );
     injector.setProperty( meta, "TRIM_TYPE", setValue( mftt, "none" ), "f" );
-    assertEquals( 0, meta.getFieldTrimType()[0] );
+    assertEquals( 0, meta.getSplitFields()[0].getFieldTrimType() );
     injector.setProperty( meta, "TRIM_TYPE", setValue( mftt, "left" ), "f" );
-    assertEquals( 1, meta.getFieldTrimType()[0] );
+    assertEquals( 1, meta.getSplitFields()[0].getFieldTrimType() );
     injector.setProperty( meta, "TRIM_TYPE", setValue( mftt, "right" ), "f" );
-    assertEquals( 2, meta.getFieldTrimType()[0] );
+    assertEquals( 2, meta.getSplitFields()[0].getFieldTrimType() );
     injector.setProperty( meta, "TRIM_TYPE", setValue( mftt, "both" ), "f" );
-    assertEquals( 3, meta.getFieldTrimType()[0] );
+    assertEquals( 3, meta.getSplitFields()[0].getFieldTrimType() );
     skipPropertyTest( "TRIM_TYPE" );
 
     // TODO check field type plugins

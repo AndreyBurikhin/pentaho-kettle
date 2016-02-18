@@ -86,8 +86,13 @@ public class FieldSplitter_EmptyStringVsNull_Test {
   private void executeAndAssertResults( List<Object[]> expected ) throws Exception {
     FieldSplitterMeta meta = new FieldSplitterMeta();
     meta.allocate( 3 );
-    meta.setFieldName( new String[] { "s1", "s2", "s3" } );
-    meta.setFieldType( new int[] { ValueMetaInterface.TYPE_STRING, ValueMetaInterface.TYPE_STRING, ValueMetaInterface.TYPE_STRING } );
+    meta.getSplitFields()[0].setFieldName( "s1" );
+    meta.getSplitFields()[1].setFieldName( "s2" );
+    meta.getSplitFields()[2].setFieldName( "s3" );
+
+    meta.getSplitFields()[0].setFieldType( ValueMetaInterface.TYPE_STRING );
+    meta.getSplitFields()[1].setFieldType( ValueMetaInterface.TYPE_STRING );
+    meta.getSplitFields()[2].setFieldType( ValueMetaInterface.TYPE_STRING );
     meta.setSplitField( "string" );
     meta.setDelimiter( "," );
 
