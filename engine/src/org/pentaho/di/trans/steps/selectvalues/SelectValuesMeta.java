@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -71,21 +71,83 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
 
   // SELECT mode
   /** Select: Name of the selected field */
-  @Injection( name = "FIELD_NAME", group = "FIELDS" )
+  /*@Injection( name = "FIELD_NAME", group = "FIELDS" )
   private String[] selectName;
 
   /** Select: Rename to ... */
-  @Injection( name = "FIELD_RENAME", group = "FIELDS" )
+  /*@Injection( name = "FIELD_RENAME", group = "FIELDS" )
   private String[] selectRename;
 
   /** Select: length of field */
-  @Injection( name = "FIELD_LENGTH", group = "FIELDS" )
+  /*@Injection( name = "FIELD_LENGTH", group = "FIELDS" )
   private int[] selectLength;
 
   /** Select: Precision of field (for numbers) */
-  @Injection( name = "FIELD_PRECISION", group = "FIELDS" )
-  private int[] selectPrecision;
+  /*@Injection( name = "FIELD_PRECISION", group = "FIELDS" )
+  private int[] selectPrecision;*/
+  
+  public static class SelectField implements Cloneable {
+    
+    /** Select: Name of the selected field */
+    @Injection( name = "FIELD_NAME", group = "FIELDS" )
+    private String name;
 
+    /** Select: Rename to ... */
+    @Injection( name = "FIELD_RENAME", group = "FIELDS" )
+    private String rename;
+
+    /** Select: length of field */
+    @Injection( name = "FIELD_LENGTH", group = "FIELDS" )
+    private int length;
+
+    /** Select: Precision of field (for numbers) */
+    @Injection( name = "FIELD_PRECISION", group = "FIELDS" )
+    private int precision;
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName( String name ) {
+      this.name = name;
+    }
+
+    public String getRename() {
+      return rename;
+    }
+
+    public void setRename( String rename ) {
+      this.rename = rename;
+    }
+
+    public int getLength() {
+      return length;
+    }
+
+    public void setLength( int length ) {
+      this.length = length;
+    }
+
+    public int getPrecision() {
+      return precision;
+    }
+
+    public void setPrecision( int precision ) {
+      this.precision = precision;
+    }
+
+    public SelectField clone() {
+      try {
+        return (SelectField) super.clone();
+      } catch ( CloneNotSupportedException e ) {
+        return null;
+      }
+    }    
+  }
+
+  @InjectionDeep
+  private SelectField[] selectFields;
+  
   /**
    * Select: flag to indicate that the non-selected fields should also be taken along, ordered by fieldname
    */
@@ -120,64 +182,20 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
     this.deleteName = deleteName;
   }
 
-  /**
-   * @return Returns the selectLength.
-   */
-  public int[] getSelectLength() {
-    return selectLength;
+  public String[] selectFieldNames() {
+    String[] names = new String[selectFields.length];
+    for ( int i = 0; i < selectFields.length; i++ ) {
+      names[i] = selectFields[i].getName();
+    }
+    return names;
   }
 
-  /**
-   * @param selectLength
-   *          The selectLength to set.
-   */
-  public void setSelectLength( int[] selectLength ) {
-    this.selectLength = selectLength;
-  }
-
-  /**
-   * @return Returns the selectName.
-   */
-  public String[] getSelectName() {
-    return selectName;
-  }
-
-  /**
-   * @param selectName
-   *          The selectName to set.
-   */
-  public void setSelectName( String[] selectName ) {
-    this.selectName = selectName;
-  }
-
-  /**
-   * @return Returns the selectPrecision.
-   */
-  public int[] getSelectPrecision() {
-    return selectPrecision;
-  }
-
-  /**
-   * @param selectPrecision
-   *          The selectPrecision to set.
-   */
-  public void setSelectPrecision( int[] selectPrecision ) {
-    this.selectPrecision = selectPrecision;
-  }
-
-  /**
-   * @return Returns the selectRename.
-   */
-  public String[] getSelectRename() {
-    return selectRename;
-  }
-
-  /**
-   * @param selectRename
-   *          The selectRename to set.
-   */
-  public void setSelectRename( String[] selectRename ) {
-    this.selectRename = selectRename;
+  public String[] selectFieldRenames() {
+    String[] renames = new String[selectFields.length];
+    for ( int i = 0; i < selectFields.length; i++ ) {
+      renames[i] = selectFields[i].getRename();
+    }
+    return renames;
   }
 
   public void loadXML( Node stepnode, List<DatabaseMeta> databases, IMetaStore metaStore ) throws KettleXMLException {
@@ -191,10 +209,7 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
   }
 
   private void allocateSelect( int nrFields ) {
-    selectName = new String[nrFields];
-    selectRename = new String[nrFields];
-    selectLength = new int[nrFields];
-    selectPrecision = new int[nrFields];
+    selectFields = new SelectField[nrFields];
   }
 
   private void allocateRemove( int nrRemove ) {
@@ -208,16 +223,19 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
   public Object clone() {
     SelectValuesMeta retval = (SelectValuesMeta) super.clone();
 
-    int nrfields = selectName.length;
+    int nrfields = selectFields.length;
     int nrremove = deleteName.length;
     int nrmeta = meta.length;
 
     retval.allocate( nrfields, nrremove, nrmeta );
-    System.arraycopy( selectName, 0, retval.selectName, 0, nrfields );
-    System.arraycopy( selectRename, 0, retval.selectRename, 0, nrfields );
-    System.arraycopy( selectLength, 0, retval.selectLength, 0, nrfields );
-    System.arraycopy( selectPrecision, 0, retval.selectPrecision, 0, nrfields );
-
+    //System.arraycopy( selectName, 0, retval.selectName, 0, nrfields );
+    //System.arraycopy( selectRename, 0, retval.selectRename, 0, nrfields );
+    //System.arraycopy( selectLength, 0, retval.selectLength, 0, nrfields );
+    //System.arraycopy( selectPrecision, 0, retval.selectPrecision, 0, nrfields );
+    for (int i = 0; i < nrfields; i++ ) {
+      retval.getSelectFields()[i] = selectFields[i].clone();
+    }
+    
     System.arraycopy( deleteName, 0, retval.deleteName, 0, nrremove );
 
     for ( int i = 0; i < nrmeta; i++ ) {
@@ -239,10 +257,11 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
 
       for ( int i = 0; i < nrfields; i++ ) {
         Node line = XMLHandler.getSubNodeByNr( fields, "field", i );
-        selectName[i] = XMLHandler.getTagValue( line, "name" );
-        selectRename[i] = XMLHandler.getTagValue( line, "rename" );
-        selectLength[i] = Const.toInt( XMLHandler.getTagValue( line, "length" ), -2 ); // $NON-NtagLS-1$
-        selectPrecision[i] = Const.toInt( XMLHandler.getTagValue( line, "precision" ), -2 );
+        selectFields[i] = new SelectField();
+        selectFields[i].setName( XMLHandler.getTagValue( line, "name" ) );
+        selectFields[i].setRename( XMLHandler.getTagValue( line, "rename" ) );
+        selectFields[i].setLength( Const.toInt( XMLHandler.getTagValue( line, "length" ), -2 ) ); // $NON-NtagLS-1$
+        selectFields[i].setPrecision( Const.toInt( XMLHandler.getTagValue( line, "precision" ), -2 ) );
       }
       selectingAndSortingUnspecifiedFields =
         "Y".equalsIgnoreCase( XMLHandler.getTagValue( fields, "select_unspecified" ) );
@@ -270,7 +289,7 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
   public void getSelectFields( RowMetaInterface inputRowMeta, String name ) throws KettleStepException {
     RowMetaInterface row;
 
-    if ( selectName != null && selectName.length > 0 ) { // SELECT values
+    if ( selectFields != null && selectFields.length > 0 ) { // SELECT values
 
       // 0. Start with an empty row
       // 1. Keep only the selected values
@@ -279,23 +298,24 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
       //
 
       row = new RowMeta();
-      for ( int i = 0; i < selectName.length; i++ ) {
-        ValueMetaInterface v = inputRowMeta.searchValueMeta( selectName[i] );
+      for ( int i = 0; i < selectFields.length; i++ ) {
+        ValueMetaInterface v = inputRowMeta.searchValueMeta( selectFields[i].getName() );
 
         if ( v != null ) { // We found the value
 
           v = v.clone();
           // Do we need to rename ?
-          if ( !v.getName().equals( selectRename[i] ) && selectRename[i] != null && selectRename[i].length() > 0 ) {
-            v.setName( selectRename[i] );
+          if ( !v.getName().equals( selectFields[i].getRename() ) && selectFields[i].getRename() != null
+              && selectFields[i].getRename().length() > 0 ) {
+            v.setName( selectFields[i].getRename() );
             v.setOrigin( name );
           }
-          if ( selectLength[i] != -2 ) {
-            v.setLength( selectLength[i] );
+          if ( selectFields[i].getLength() != -2 ) {
+            v.setLength( selectFields[i].getLength() );
             v.setOrigin( name );
           }
-          if ( selectPrecision[i] != -2 ) {
-            v.setPrecision( selectPrecision[i] );
+          if ( selectFields[i].getPrecision() != -2 ) {
+            v.setPrecision( selectFields[i].getPrecision() );
             v.setOrigin( name );
           }
 
@@ -312,7 +332,7 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
         List<String> extra = new ArrayList<String>();
         for ( int i = 0; i < inputRowMeta.size(); i++ ) {
           String fieldName = inputRowMeta.getValueMeta( i ).getName();
-          if ( Const.indexOfString( fieldName, selectName ) < 0 ) {
+          if ( Const.indexOfString( fieldName, selectFieldNames() ) < 0 ) {
             extra.add( fieldName );
           }
         }
@@ -433,19 +453,19 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
     StringBuilder retval = new StringBuilder( 300 );
 
     retval.append( "    <fields>" );
-    for ( int i = 0; i < selectName.length; i++ ) {
+    for ( int i = 0; i < selectFields.length; i++ ) {
       retval.append( "      <field>" );
-      retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_NAME" ), selectName[i] ) );
-      if ( selectRename.length > 0 ) {
-        retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_RENAME" ), selectRename[i] ) );
-      }
-      if ( selectLength.length > 0 ) {
-        retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_LENGTH" ), selectLength[i] ) );
-      }
-      if ( selectPrecision.length > 0 ) {
+      retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_NAME" ), selectFields[i].getName() ) );
+      //if ( selectRename.length > 0 ) {
+        retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_RENAME" ), selectFields[i].getRename() ) );
+      //}
+      //if ( selectLength.length > 0 ) {
+        retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_LENGTH" ), selectFields[i].getLength() ) );
+      //}
+      //if ( selectPrecision.length > 0 ) {
         retval.append( "        " ).append( XMLHandler.addTagValue( getXmlCode( "FIELD_PRECISION" ),
-            selectPrecision[i] ) );
-      }
+            selectFields[i].getPrecision() ) );
+      //}
       retval.append( "      </field>" );
     }
     retval.append( "        " ).append(
@@ -472,10 +492,11 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
       allocate( nrfields, nrremove, nrmeta );
 
       for ( int i = 0; i < nrfields; i++ ) {
-        selectName[i] = rep.getStepAttributeString( id_step, i, getRepCode( "FIELD_NAME" ) );
-        selectRename[i] = rep.getStepAttributeString( id_step, i, getRepCode( "FIELD_RENAME" ) );
-        selectLength[i] = (int) rep.getStepAttributeInteger( id_step, i, getRepCode( "FIELD_LENGTH" ) );
-        selectPrecision[i] = (int) rep.getStepAttributeInteger( id_step, i, getRepCode( "FIELD_PRECISION" ) );
+        selectFields[i].setName( rep.getStepAttributeString( id_step, i, getRepCode( "FIELD_NAME" ) ) );
+        selectFields[i].setRename( rep.getStepAttributeString( id_step, i, getRepCode( "FIELD_RENAME" ) ) );
+        selectFields[i].setLength( (int) rep.getStepAttributeInteger( id_step, i, getRepCode( "FIELD_LENGTH" ) ) );
+        selectFields[i].setPrecision( (int) rep.getStepAttributeInteger( id_step, i, getRepCode(
+            "FIELD_PRECISION" ) ) );
       }
       selectingAndSortingUnspecifiedFields =
         rep.getStepAttributeBoolean( id_step, getRepCode( "SELECT_UNSPECIFIED" ) );
@@ -515,11 +536,14 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
 
   public void saveRep( Repository rep, IMetaStore metaStore, ObjectId id_transformation, ObjectId id_step ) throws KettleException {
     try {
-      for ( int i = 0; i < selectName.length; i++ ) {
-        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_NAME" ), selectName[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_RENAME" ), selectRename[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_LENGTH" ), selectLength[i] );
-        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_PRECISION" ), selectPrecision[i] );
+      for ( int i = 0; i < selectFields.length; i++ ) {
+        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_NAME" ), selectFields[i].getName() );
+        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_RENAME" ), selectFields[i]
+            .getRename() );
+        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_LENGTH" ), selectFields[i]
+            .getLength() );
+        rep.saveStepAttribute( id_transformation, id_step, i, getRepCode( "FIELD_PRECISION" ), selectFields[i]
+            .getPrecision() );
       }
       rep.saveStepAttribute(
         id_transformation, id_step, getRepCode( "SELECT_UNSPECIFIED" ), selectingAndSortingUnspecifiedFields );
@@ -584,10 +608,10 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
       boolean error_found = false;
 
       // Starting from selected fields in ...
-      for ( int i = 0; i < this.selectName.length; i++ ) {
-        int idx = prev.indexOfValue( selectName[i] );
+      for ( int i = 0; i < this.selectFields.length; i++ ) {
+        int idx = prev.indexOfValue( selectFields[i].getName() );
         if ( idx < 0 ) {
-          error_message += "\t\t" + selectName[i] + Const.CR;
+          error_message += "\t\t" + selectFields[i].getName() + Const.CR;
           error_found = true;
         }
       }
@@ -605,11 +629,11 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
         remarks.add( cr );
       }
 
-      if ( this.selectName.length > 0 ) {
+      if ( this.selectFields.length > 0 ) {
         // Starting from prev...
         for ( int i = 0; i < prev.size(); i++ ) {
           ValueMetaInterface pv = prev.getValueMeta( i );
-          int idx = Const.indexOfString( pv.getName(), selectName );
+          int idx = Const.indexOfString( pv.getName(), selectFieldNames() );
           if ( idx < 0 ) {
             error_message += "\t\t" + pv.getName() + " (" + pv.getTypeDesc() + ")" + Const.CR;
             error_found = true;
@@ -707,14 +731,14 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
     }
 
     // Check for doubles in the selected fields...
-    int[] cnt = new int[selectName.length];
+    int[] cnt = new int[selectFields.length];
     boolean error_found = false;
     String error_message = "";
 
-    for ( int i = 0; i < selectName.length; i++ ) {
+    for ( int i = 0; i < selectFields.length; i++ ) {
       cnt[i] = 0;
-      for ( int j = 0; j < selectName.length; j++ ) {
-        if ( selectName[i].equals( selectName[j] ) ) {
+      for ( int j = 0; j < selectFields.length; j++ ) {
+        if ( selectFields[i].getName().equals( selectFields[j].getName() ) ) {
           cnt[i]++;
         }
       }
@@ -727,8 +751,8 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
           error_found = true;
         }
         error_message +=
-          BaseMessages.getString(
-            PKG, "SelectValuesMeta.CheckResult.OccurentRow", i + " : " + selectName[i] + "  (" + cnt[i] ) + Const.CR;
+            BaseMessages.getString( PKG, "SelectValuesMeta.CheckResult.OccurentRow", i + " : " + selectFields[i]
+                .getName() + "  (" + cnt[i] ) + Const.CR;
         error_found = true;
       }
     }
@@ -781,6 +805,14 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
     return true;
   }
 
+  public SelectField[] getSelectFields() {
+    return selectFields;
+  }
+
+  public void setSelectFields( SelectField[] selectFields ) {
+    this.selectFields = selectFields;
+  }
+
   /**
    * We will describe in which way the field names change between input and output in this step.
    *
@@ -791,9 +823,9 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
 
     // Select values...
     //
-    for ( int i = 0; i < getSelectName().length; i++ ) {
-      String input = getSelectName()[i];
-      String output = getSelectRename()[i];
+    for ( int i = 0; i < selectFields.length; i++ ) {
+      String input = selectFields[i].getName();
+      String output = selectFields[i].getRename();
 
       // See if the select tab renames a column!
       //
@@ -815,7 +847,7 @@ public class SelectValuesMeta extends BaseStepMeta implements StepMetaInterface 
       if ( !Const.isEmpty( output ) && !input.equalsIgnoreCase( output ) ) {
         // See if the input is not the output of a row in the Select tab
         //
-        int idx = Const.indexOfString( input, getSelectRename() );
+        int idx = Const.indexOfString( input, selectFieldRenames() );
 
         if ( idx < 0 ) {
           // nothing special, add it to the list
