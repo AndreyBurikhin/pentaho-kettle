@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.pentaho.di.core.CheckResult;
 import org.pentaho.di.core.CheckResultInterface;
@@ -37,6 +38,9 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.core.fileinput.FileInputList;
+import org.pentaho.di.core.injection.Injection;
+import org.pentaho.di.core.injection.InjectionDeep;
+import org.pentaho.di.core.injection.InjectionSupported;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.row.value.ValueMetaBase;
@@ -67,6 +71,7 @@ import org.w3c.dom.Node;
  */
 @Step( id = "JsonInput", image = "JSI.svg", i18nPackageName = "org.pentaho.di.trans.steps.jsoninput",
     name = "JsonInput.name", description = "JsonInput.description", categoryDescription = "JsonInput.category" )
+@InjectionSupported( localizationPrefix = "JsonInput.Injection.", groups = { "FILENAME_LINES", "FIELDS", "ADDITIONAL_OUTPUT" } )
 public class JsonInputMeta extends BaseFileInputStepMeta implements StepMetaInterface {
   private static Class<?> PKG = JsonInputMeta.class; // for i18n purposes, needed by Translator2!!
 
@@ -75,25 +80,32 @@ public class JsonInputMeta extends BaseFileInputStepMeta implements StepMetaInte
 
   // TextFileInputMeta.Content.includeFilename
   /** Flag indicating that we should include the filename in the output */
+  @Injection( name = "INCLUDE_FILENAME" )
   private boolean includeFilename; //InputFiles.isaddresult?..
 
   // TextFileInputMeta.Content.filenameField
   /** The name of the field in the output containing the filename */
+  @Injection( name = "FILENAME_FIELD" )
   private String filenameField;
 
   /** Flag indicating that a row number field should be included in the output */
+  @Injection( name = "INCLUDE_ROW_NUMBER" )
   private boolean includeRowNumber;
 
   // TextFileInputMeta.Content.rowNumberField
   /** The name of the field in the output containing the row number */
+  @Injection( name = "ROW_NUMBER_FIELD" )
   private String rowNumberField;
 
   // TextFileInputMeta.Content.rowLimit
   /** The maximum number or lines to read */
+  @Injection( name = "ROW_LIMIT" )
   private long rowLimit;
 
   /** File info fields **/
+  @InjectionDeep
   protected AdditionalFileOutputFields additionalFileOutputFields = new AdditionalFileOutputFields();
+  @InjectionDeep
   private InputFiles jsonInputFiles;
 
   protected void setInputFiles( InputFiles inputFiles ) {
@@ -106,7 +118,9 @@ public class JsonInputMeta extends BaseFileInputStepMeta implements StepMetaInte
   }
 
   public static class InputFiles extends BaseFileInputStepMeta.InputFiles {
+    //@InjectionDeep
     public JsonInputField[] inputFields;
+    
     public void allocate( int nrFiles, int nrFields ) {
       fileName = new String[nrFiles];
       fileMask = new String[nrFiles];
@@ -131,8 +145,65 @@ public class JsonInputMeta extends BaseFileInputStepMeta implements StepMetaInte
     }
   }
 
-  public static class AdditionalFileOutputFields extends BaseFileInputStepMeta.AdditionalOutputFields {
+  public static class AdditionalFileOutputFields implements Cloneable /*extends BaseFileInputStepMeta.AdditionalOutputFields*/ {
 
+    /** Additional fields **/
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_SHORT_FILE_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String shortFilenameField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_EXTENSION_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String extensionField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_PATH_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String pathField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_SIZE_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String sizeField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_HIDDEN_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String hiddenField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_LAST_MODIFICATION_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String lastModificationField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_URI_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String uriField;
+    @Injection( name = "ADDITIONAL_OUTPUT_FILE_ROOT_URI_FIELDNAME", group = "ADDITIONAL_OUTPUT" )
+    public String rootUriField;
+
+    public Object clone() {
+      try {
+        return super.clone();
+      } catch ( CloneNotSupportedException e ) {
+        return null;
+      }
+    }
+
+    /**
+     * Set null for all empty field values to be able to fast check during step processing. Need to be executed once
+     * before processing.
+     */
+    public void normalize() {
+      if ( StringUtils.isBlank( shortFilenameField ) ) {
+        shortFilenameField = null;
+      }
+      if ( StringUtils.isBlank( extensionField ) ) {
+        extensionField = null;
+      }
+      if ( StringUtils.isBlank( pathField ) ) {
+        pathField = null;
+      }
+      if ( StringUtils.isBlank( sizeField ) ) {
+        sizeField = null;
+      }
+      if ( StringUtils.isBlank( hiddenField ) ) {
+        hiddenField = null;
+      }
+      if ( StringUtils.isBlank( lastModificationField ) ) {
+        lastModificationField = null;
+      }
+      if ( StringUtils.isBlank( uriField ) ) {
+        uriField = null;
+      }
+      if ( StringUtils.isBlank( rootUriField ) ) {
+        rootUriField = null;
+      }
+    }
+    
     public void getFields( RowMetaInterface r, String name, RowMetaInterface[] info,
         VariableSpace space, Repository repository, IMetaStore metaStore ) throws KettleStepException {
       // TextFileInput is the same, this can be refactored further 
@@ -193,28 +264,37 @@ public class JsonInputMeta extends BaseFileInputStepMeta implements StepMetaInte
   }
 
   /** Is In fields */
+  @Injection( name = "VALUE_FIELD" )
   private String valueField;
 
   /** Is In fields */
+  @Injection( name = "IN_FIELDS" )
   private boolean inFields;
 
   /** Is a File */
+  @Injection( name = "IS_A_FILE" )
   private boolean isAFile;
 
   /** Flag: add result filename **/
+  @Injection( name = "ADD_RESULT_FILE" )
   private boolean addResultFile;
 
   /** Flag : do we ignore empty files */
+  @Injection( name = "IS_IGNORE_EMPTY_FILE" )
   private boolean isIgnoreEmptyFile;
 
   /** Flag : do not fail if no file */
+  @Injection( name = "DO_NOT_FAIL_IF_NO_FILE" )
   private boolean doNotFailIfNoFile;
 
+  @Injection( name = "IGNORE_MISSING_PATH" )
   private boolean ignoreMissingPath;
 
   /** Flag : read url as source */
+  @Injection( name = "READ_URL" )
   private boolean readurl;
 
+  @Injection( name = "REMOVE_SOURCE_FIELD" )
   private boolean removeSourceField;
 
   public JsonInputMeta() {
