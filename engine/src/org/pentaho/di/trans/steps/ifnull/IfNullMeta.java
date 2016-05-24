@@ -30,6 +30,8 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
+import org.pentaho.di.core.injection.Injection;
+import org.pentaho.di.core.injection.InjectionSupported;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.xml.XMLHandler;
@@ -47,40 +49,54 @@ import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.metastore.api.IMetaStore;
 import org.w3c.dom.Node;
 
+@InjectionSupported( localizationPrefix = "IfNull.Injection." )
 public class IfNullMeta extends BaseStepMeta implements StepMetaInterface {
   private static Class<?> PKG = IfNullMeta.class; // for i18n purposes, needed by Translator2!!
 
   /** which fields to display? */
+  @Injection( name = "FIELD_NAME" )
   private String[] fieldName;
 
   /** by which value we replace */
+  @Injection( name = "REPLACE_VALUE" )
   private String[] replaceValue;
 
   /** which types to display? */
+  @Injection( name = "TYPE_NAME" )
   private String[] typeName;
 
   /** by which value we replace */
+  @Injection( name = "TYPE_REPLACE_VALUE" )
   private String[] typereplaceValue;
 
+  @Injection( name = "TYPE_REPLACE_MASK" )
   private String[] typereplaceMask;
 
+  @Injection( name = "REPLACE_MASK" )
   private String[] replaceMask;
 
   /** Flag : set empty string for type **/
+  @Injection( name = "SET_TYPE_EMPTY_STRING" )
   private boolean[] setTypeEmptyString;
 
   /** Flag : set empty string **/
+  @Injection( name = "SET_EMPTY_STRING" )
   private boolean[] setEmptyString;
 
+  @Injection( name = "SELECT_FIELDS" )
   private boolean selectFields;
 
+  @Injection( name = "SELECT_VALUES_TYPE" )
   private boolean selectValuesType;
 
+  @Injection( name = "REPLACE_ALL_BY_VALUE" )
   private String replaceAllByValue;
 
+  @Injection( name = "REPLACE_ALL_MASK" )
   private String replaceAllMask;
 
   /** The flag to set auto commit on or off on the connection */
+  @Injection( name = "SET_EMPTY_STRING_ALL" )
   private boolean setEmptyStringAll;
 
   public IfNullMeta() {
