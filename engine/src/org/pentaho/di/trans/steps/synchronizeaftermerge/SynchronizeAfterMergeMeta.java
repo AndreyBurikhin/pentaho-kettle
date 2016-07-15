@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2013 by Pentaho : http://www.pentaho.com
+ * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -33,6 +33,8 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.exception.KettleXMLException;
+import org.pentaho.di.core.injection.Injection;
+import org.pentaho.di.core.injection.InjectionSupported;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -57,13 +59,16 @@ import org.w3c.dom.Node;
  * Created on 13-10-2008
  *
  */
+@InjectionSupported( localizationPrefix = "SynchronizeAfterMerge.Injection.", groups = {  } )
 public class SynchronizeAfterMergeMeta extends BaseStepMeta implements StepMetaInterface {
   private static Class<?> PKG = SynchronizeAfterMergeMeta.class; // for i18n purposes, needed by Translator2!!
 
   /** what's the lookup schema? */
+  @Injection( name = "SHEMA_NAME" )
   private String schemaName;
 
   /** what's the lookup table? */
+  @Injection( name = "TABLE_NAME" )
   private String tableName;
 
   /** database connection */
@@ -91,10 +96,13 @@ public class SynchronizeAfterMergeMeta extends BaseStepMeta implements StepMetaI
   private Boolean[] update;
 
   /** Commit size for inserts/updates */
+  @Injection( name = "COMMIT_SIZE" )
   private int commitSize;
 
+  @Injection( name = "TABLE_NAME_IN_FIELD" )
   private boolean tablenameInField;
 
+  @Injection( name = "TABLE_NAME_FIELD" )
   private String tablenameField;
 
   private String operationOrderField;
