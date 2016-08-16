@@ -39,6 +39,8 @@ import org.pentaho.di.core.exception.KettleDatabaseException;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.exception.KettleXMLException;
+import org.pentaho.di.core.injection.Injection;
+import org.pentaho.di.core.injection.InjectionSupported;
 import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
@@ -74,7 +76,7 @@ import org.w3c.dom.Node;
  *        present. Perhaps a more general caching service should be considered.
  *
  */
-
+@InjectionSupported( localizationPrefix = "DimensionLookup.Injection.", groups = { "FIELDS" } )
 public class DimensionLookupMeta extends BaseStepMeta implements StepMetaInterface,
     ProvidesModelerMeta {
   private static Class<?> PKG = DimensionLookupMeta.class; // for i18n purposes, needed by Translator2!!
@@ -122,15 +124,18 @@ public class DimensionLookupMeta extends BaseStepMeta implements StepMetaInterfa
     BaseMessages.getString( PKG, "DimensionLookupMeta.StartDateAlternative.ColumnValue.Label" ), };
 
   /** The lookup schema name */
+  @Injection( name = "SCHEMA_NAME" )
   private String schemaName;
 
   /** The lookup table */
+  @Injection( name = "TABLE_NAME" )
   private String tableName;
 
   /** The database connection */
   private DatabaseMeta databaseMeta;
 
   /** Update the dimension or just lookup? */
+  @Injection( name = "UPDATE_DIMENSION" )
   private boolean update;
 
   /** Fields used to look up a value in the dimension */
@@ -140,12 +145,15 @@ public class DimensionLookupMeta extends BaseStepMeta implements StepMetaInterfa
   private String[] keyLookup;
 
   /** The field to use for date range lookup in the dimension */
+  @Injection( name = "DATE_FIELD" )
   private String dateField;
 
   /** The 'from' field of the date range in the dimension */
+  @Injection( name = "DATE_FROM" )
   private String dateFrom;
 
   /** The 'to' field of the date range in the dimension */
+  @Injection( name = "DATE_TO" )
   private String dateTo;
 
   /** Fields containing the values in the input stream to update the dimension with */
@@ -158,33 +166,42 @@ public class DimensionLookupMeta extends BaseStepMeta implements StepMetaInterfa
   private int[] fieldUpdate;
 
   /** Name of the technical key (surrogate key) field to return from the dimension */
+  @Injection( name = "TECHNICAL_KEY_FIELD" )
   private String keyField;
 
   /** New name of the technical key field */
+  @Injection( name = "TECHNICAL_KEY_NEW_NAME" )
   private String keyRename;
 
   /** Use auto increment field as TK */
   private boolean autoIncrement;
 
   /** The name of the version field */
+  @Injection( name = "VERSION_FIELD" )
   private String versionField;
 
   /** Sequence name to get the sequence from */
+  @Injection( name = "COMMIT_SIZE" )
   private String sequenceName;
 
   /** The number of rows between commits */
+  @Injection( name = "COMMIT_SIZE" )
   private int commitSize;
 
   /** Flag to indicate the use of batch updates, default disabled for backward compatibility */
+  @Injection( name = "COMMIT_SIZE" )
   private boolean useBatchUpdate;
 
   /** The year to use as minus infinity in the dimensions date range */
+  @Injection( name = "MIN_YEAR" )
   private int minYear;
 
   /** The year to use as plus infinity in the dimensions date range */
+  @Injection( name = "MAX_YEAR" )
   private int maxYear;
 
   /** Which method to use for the creation of the tech key */
+  @Injection( name = "TECHNICAL_KEY_CREATION" )
   private String techKeyCreation = null;
 
   public static String CREATION_METHOD_AUTOINC = "autoinc";
@@ -192,9 +209,11 @@ public class DimensionLookupMeta extends BaseStepMeta implements StepMetaInterfa
   public static String CREATION_METHOD_TABLEMAX = "tablemax";
 
   /** The size of the cache in ROWS : -1 means: not set, 0 means: cache all */
+  @Injection( name = "CACHE_SIZE" )
   private int cacheSize;
 
   /** Flag to indicate we're going to use an alternative start date */
+  @Injection( name = "VERSION_FIELD" )
   private boolean usingStartDateAlternative;
 
   /** The type of alternative */
@@ -203,6 +222,7 @@ public class DimensionLookupMeta extends BaseStepMeta implements StepMetaInterfa
   /** The field name in case we select the column value option as an alternative start date */
   private String startDateFieldName;
 
+  @Injection( name = "PRELOAD_CACHE" )
   private boolean preloadingCache;
 
   public DimensionLookupMeta() {
