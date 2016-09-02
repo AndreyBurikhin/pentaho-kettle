@@ -1,5 +1,5 @@
 /*!
- * Copyright 2010 - 2015 Pentaho Corporation.  All rights reserved.
+ * Copyright 2010 - 2016 Pentaho Corporation.  All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,27 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.ConnectException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.pentaho.di.core.extension.ExtensionPointHandler;
+import org.pentaho.di.core.extension.KettleExtensionPoint;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.repository.KettleRepositoryLostException;
 
 class UnifiedRepositoryInvocationHandler<T> implements InvocationHandler {
+
+  private LogChannelInterface log;
+
   private T rep;
+  
+  private AtomicBoolean needToLogin = new AtomicBoolean(false);
 
   // private Repository owner;
 
   UnifiedRepositoryInvocationHandler( T rep ) {
     this.rep = rep;
+    log = new LogChannel( this );
   }
 
   @Override
@@ -38,12 +49,34 @@ class UnifiedRepositoryInvocationHandler<T> implements InvocationHandler {
     try {
       return method.invoke( rep, args );
     } catch ( InvocationTargetException ex ) {
-      if ( lookupConnectException( ex ) ) {
-        throw new KettleRepositoryLostException( ex.getCause() );
+      if ( lookupConnectException( ex ) && !callFromHandler()) {
+        needToLogin.set( true );
+        synchronized ( this ) {
+          if ( needToLogin.get() ) {
+            KettleRepositoryLostException klre = new KettleRepositoryLostException( ex.getCause() );
+            ExtensionPointHandler.callExtensionPoint( log, KettleExtensionPoint.RepositoryOperationException.id, klre );
+            needToLogin.set( false );
+          }
+        }
+        return method.invoke( rep, args );
+        // throw new KettleRepositoryLostException( ex.getCause() );
       }
 
       throw ex.getCause();
     }
+  }
+
+  private boolean callFromHandler() {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    if ( stackTrace.length < 4 ) {
+      return false;
+    }
+    for ( int i = 4; i < stackTrace.length; i++ ) {
+      if ( stackTrace[i].getClassName().equals( UnifiedRepositoryInvocationHandler.class.getCanonicalName() ) ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private boolean lookupConnectException( Throwable root ) {

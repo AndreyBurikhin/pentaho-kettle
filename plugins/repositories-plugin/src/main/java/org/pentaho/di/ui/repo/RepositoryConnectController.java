@@ -34,6 +34,7 @@ import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.RepositoryPluginType;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.repository.AbstractRepository;
+import org.pentaho.di.repository.ReconnectableRepository;
 import org.pentaho.di.repository.RepositoriesMeta;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryMeta;
@@ -213,6 +214,45 @@ public class RepositoryConnectController {
     return jsonObject.toString();
   }
 
+  public String reconnectToRepository( String username, String password ) {
+    Repository currentRepositoryInstance = getConnectedRepositoryInstance();
+    if ( !( currentRepositoryInstance instanceof ReconnectableRepository ) ) {
+      log.logError( "Unable to reconnect to repository", currentRepositoryInstance.getName() );
+    }
+    return reconnectToRepository( currentRepository, (ReconnectableRepository) currentRepositoryInstance, username,
+        password );
+  }
+
+  public String reconnectToRepository( RepositoryMeta repositoryMeta , ReconnectableRepository repository , String username, String password ) {
+    JSONObject jsonObject = new JSONObject();
+    try {
+      if ( username != null ) {
+        getPropsUI().setLastRepositoryLogin( username );
+      }
+      repository.init( repositoryMeta );
+      repository.connect( username, password );
+//      Spoon spoon = getSpoon();
+//      if ( spoon.getRepository() != null ) {
+//        spoon.closeRepository();
+//      } else {
+//        spoon.closeAllJobsAndTransformations( true );
+//      }
+//      spoon.setRepository( repository );
+      //setConnectedRepository( repositoryMeta );
+//      fireListeners();
+      jsonObject.put( "success", true );
+    } catch ( KettleException ke ) {
+      if ( ke.getMessage().contains( ERROR_401 ) ) {
+        jsonObject.put( ERROR_MESSAGE, BaseMessages.getString( PKG, "RepositoryConnection.Error.InvalidCredentials" ) );
+      } else {
+        jsonObject.put( ERROR_MESSAGE, BaseMessages.getString( PKG, "RepositoryConnection.Error.InvalidServer" ) );
+      }
+      jsonObject.put( "success", false );
+      log.logError( "Unable to connect to repository", ke );
+    }
+    return jsonObject.toString();
+  }
+
   public boolean deleteRepository( String name ) {
     RepositoryMeta repositoryMeta = repositoriesMeta.findRepository( name );
     int index = repositoriesMeta.indexOfRepository( repositoryMeta );
@@ -310,6 +350,10 @@ public class RepositoryConnectController {
 
   public boolean isConnected() {
     return getSpoon().rep != null;
+  }
+
+  public Repository getConnectedRepositoryInstance() {
+    return getSpoon().rep;
   }
 
   public void save() {
