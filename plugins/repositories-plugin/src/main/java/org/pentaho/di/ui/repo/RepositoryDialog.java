@@ -80,6 +80,10 @@ public class RepositoryDialog extends ThinDialog {
   }
 
   private void open( RepositoryMeta repositoryMeta ) {
+    open( repositoryMeta, null );
+  }
+
+  private void open( RepositoryMeta repositoryMeta, String errorMessage ) {
 
     new BrowserFunction( browser, "close" ) {
       @Override public Object function( Object[] arguments ) {
@@ -87,6 +91,12 @@ public class RepositoryDialog extends ThinDialog {
         dialog.close();
         dialog.dispose();
         return true;
+      }
+    };
+    
+    new BrowserFunction( browser, "getErrorMessage" ) {
+      @Override public Object function( Object[] objects ) {
+        return errorMessage == null ? "" : errorMessage;
       }
     };
 
@@ -242,6 +252,11 @@ public class RepositoryDialog extends ThinDialog {
   public void openCreation() {
     super.createDialog( CREATION_TITLE, getRepoURL( CREATION_WEB_CLIENT_PATH ), OPTIONS, LOGO );
     open();
+  }
+  
+  public void openLogin( RepositoryMeta repositoryMeta, String errorMessage ) {
+    super.createDialog( LOGIN_TITLE, getRepoURL( LOGIN_WEB_CLIENT_PATH ), OPTIONS, LOGO );
+    open( repositoryMeta, errorMessage );
   }
 
   public void openLogin( RepositoryMeta repositoryMeta ) {

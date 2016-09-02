@@ -447,6 +447,10 @@ define(
         }
       }
       $scope.addToolTips = addToolTips;
+      var errorMessage = getErrorMessage();
+      if (errorMessage != "") {
+    	  $rootScope.triggerError(errorMessage);
+      }
     });
     
     function addToolTips() {
