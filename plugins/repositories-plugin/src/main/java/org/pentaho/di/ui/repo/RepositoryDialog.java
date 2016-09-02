@@ -80,6 +80,10 @@ public class RepositoryDialog extends ThinDialog {
   }
 
   private void open( RepositoryMeta repositoryMeta ) {
+    open( repositoryMeta, false, null );
+  }
+
+  private void open( RepositoryMeta repositoryMeta, boolean relogin, String errorMessage ) {
 
     new BrowserFunction( browser, "close" ) {
       @Override public Object function( Object[] arguments ) {
@@ -87,6 +91,12 @@ public class RepositoryDialog extends ThinDialog {
         dialog.close();
         dialog.dispose();
         return true;
+      }
+    };
+    
+    new BrowserFunction( browser, "getErrorMessage" ) {
+      @Override public Object function( Object[] objects ) {
+        return errorMessage == null ? "" : errorMessage;
       }
     };
 
@@ -152,9 +162,13 @@ public class RepositoryDialog extends ThinDialog {
 
     new BrowserFunction( browser, "loginToRepository" ) {
       @Override public Object function( Object[] objects ) {
-        String username = (String) objects[ 0 ];
-        String password = (String) objects[ 1 ];
-        return controller.connectToRepository( username, password );
+        String username = (String) objects[0];
+        String password = (String) objects[1];
+        if ( relogin ) {
+          return controller.reconnectToRepository( username, password );
+        } else {
+          return controller.connectToRepository( username, password );
+        }
       }
     };
 
@@ -242,6 +256,11 @@ public class RepositoryDialog extends ThinDialog {
   public void openCreation() {
     super.createDialog( CREATION_TITLE, getRepoURL( CREATION_WEB_CLIENT_PATH ), OPTIONS, LOGO );
     open();
+  }
+  
+  public void openRelogin( RepositoryMeta repositoryMeta, String errorMessage ) {
+    super.createDialog( LOGIN_TITLE, getRepoURL( LOGIN_WEB_CLIENT_PATH ), OPTIONS, LOGO );
+    open( repositoryMeta, true, errorMessage );
   }
 
   public void openLogin( RepositoryMeta repositoryMeta ) {
