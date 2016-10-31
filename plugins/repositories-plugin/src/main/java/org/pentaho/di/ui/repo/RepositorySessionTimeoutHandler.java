@@ -32,6 +32,9 @@ import org.apache.commons.lang.ClassUtils;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.IRepositoryService;
 import org.pentaho.di.repository.ReconnectableRepository;
+import org.pentaho.di.repository.Repository;
+import org.pentaho.di.repository.RepositorySecurityManager;
+import org.pentaho.di.repository.RepositorySecurityProvider;
 import org.pentaho.metastore.api.IMetaStore;
 
 public class RepositorySessionTimeoutHandler implements InvocationHandler {
@@ -41,6 +44,10 @@ public class RepositorySessionTimeoutHandler implements InvocationHandler {
   private static final String GET_META_STORE_METHOD_NAME = "getMetaStore";
 
   private static final String GET_SERVICE_METHOD_NAME = "getService";
+  
+  private static final String GET_SECURITY_PROVIDER_METHOD_NAME = "getSecurityProvider";
+  
+  private static final String GET_SECURITY_MANAGER_METHOD_NAME = "getSecurityManager";
 
   private static final int SERVICE_CLASS_ARGUMENT = 0;
 
@@ -65,6 +72,12 @@ public class RepositorySessionTimeoutHandler implements InvocationHandler {
         return wrapRepositoryServiceWithTimeoutHandler(
             (Class<? extends IRepositoryService>) args[SERVICE_CLASS_ARGUMENT] );
       }
+      if ( GET_SECURITY_PROVIDER_METHOD_NAME.equals( methodName ) ) {
+        return wrapSecurityProviderWithTimeoutHandler( repository, sessionTimeoutHandler );
+      }
+      if ( GET_SECURITY_MANAGER_METHOD_NAME.equals( methodName ) ) {
+        return wrapSecurityManagerWithTimeoutHandler( repository, sessionTimeoutHandler );
+      }
       if ( GET_META_STORE_METHOD_NAME.equals( methodName ) ) {
         return metaStoreInstance;
       }
@@ -85,7 +98,7 @@ public class RepositorySessionTimeoutHandler implements InvocationHandler {
   boolean connectedToRepository() {
     return repository.isConnected();
   }
-
+  
   IRepositoryService wrapRepositoryServiceWithTimeoutHandler( Class<? extends IRepositoryService> clazz )
     throws KettleException {
     IRepositoryService service = repository.getService( clazz );
@@ -101,6 +114,22 @@ public class RepositorySessionTimeoutHandler implements InvocationHandler {
     return wrapObjectWithTimeoutHandler( metaStore, metaStoreSessionTimeoutHandler );
   }
 
+  static RepositorySecurityProvider wrapSecurityProviderWithTimeoutHandler( Repository repository,
+      SessionTimeoutHandler sessionTimeoutHandler ) {
+    RepositorySecurityProvider securityProvider = repository.getSecurityProvider();
+    RepositoryObjectSessionTimeoutHandler securityProviderTimeoutHandler =
+        new RepositoryObjectSessionTimeoutHandler( securityProvider, sessionTimeoutHandler );
+    return wrapObjectWithTimeoutHandler( securityProvider, securityProviderTimeoutHandler );
+  }
+
+  static RepositorySecurityManager wrapSecurityManagerWithTimeoutHandler( Repository repository,
+      SessionTimeoutHandler sessionTimeoutHandler ) {
+    RepositorySecurityManager securityManager = repository.getSecurityManager();
+    RepositoryObjectSessionTimeoutHandler securityManagerTimeoutHandler =
+        new RepositoryObjectSessionTimeoutHandler( securityManager, sessionTimeoutHandler );
+    return wrapObjectWithTimeoutHandler( securityManager, securityManagerTimeoutHandler );
+  }
+ 
   @SuppressWarnings( "unchecked" )
   static <T> T wrapObjectWithTimeoutHandler( T objectToWrap, InvocationHandler timeoutHandler ) {
     List<Class<?>> objectIntrerfaces = ClassUtils.getAllInterfaces( objectToWrap.getClass() );
