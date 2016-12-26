@@ -72,6 +72,7 @@ import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulToolbarbutton;
 import org.pentaho.ui.xul.containers.XulMenu;
 import org.pentaho.ui.xul.dom.Document;
+import org.pentaho.vfs.ui.VfsFileChooserDialog;
 
 @SpoonPlugin( id = "EESpoonPlugin", image = "" )
 @SpoonPluginCategories( { "spoon", "trans-graph", "job-graph", "repository-explorer" } )
@@ -133,9 +134,11 @@ public class EESpoonPlugin implements SpoonPluginInterface, SpoonLifecycleListen
             } );
           }
           doOnSecurityUpdate();
+          registerVfsFileDialog(spoon);
           break;
         case REPOSITORY_DISCONNECTED:
           doOnSecurityCleanup();
+          unregisterVfsFileDialog();
           break;
         case STARTUP:
           doOnStartup();
@@ -167,6 +170,16 @@ public class EESpoonPlugin implements SpoonPluginInterface, SpoonLifecycleListen
   }
 
   private void doOnShutdown() {
+  }
+  
+  private void registerVfsFileDialog( Spoon spoon ) {
+    VfsFileChooserDialog dialog = spoon.getVfsFileChooserDialog( null, null );
+    PurVfsFileChooserDialog vfsFileChooserDialog = new PurVfsFileChooserDialog( dialog );
+    dialog.addVFSUIPanel( vfsFileChooserDialog );
+  }
+  
+  private void unregisterVfsFileDialog() {
+    //TODO unregister PurVfsFileChooserDialog. 
   }
 
   /**

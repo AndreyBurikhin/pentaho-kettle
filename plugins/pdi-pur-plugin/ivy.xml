@@ -39,6 +39,7 @@
     </dependency>
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}"
       changing="true" conf="compile->default" />
+    <dependency org="pentaho"  name="pentaho-vfs-browser" rev="${dependency.pentaho-vfs-browser.revision}" changing="true" conf="compile->default"/>
 
     <!-- kettle -->
     <dependency org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false"
