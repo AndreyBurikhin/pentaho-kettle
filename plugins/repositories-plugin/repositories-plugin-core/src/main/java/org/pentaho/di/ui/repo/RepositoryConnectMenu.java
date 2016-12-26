@@ -39,6 +39,8 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.repository.RepositoriesMeta;
 import org.pentaho.di.repository.RepositoryMeta;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.ui.spoon.SpoonPluginManager;
+import org.pentaho.di.ui.spoon.SpoonLifecycleListener.SpoonLifeCycleEvent;
 
 public class RepositoryConnectMenu {
 
@@ -192,6 +194,7 @@ public class RepositoryConnectMenu {
             spoon.closeRepository();
             repoConnectController.setConnectedRepository( null );
             renderAndUpdate();
+            SpoonPluginManager.getInstance().notifyLifecycleListeners( SpoonLifeCycleEvent.REPOSITORY_DISCONNECTED );
           }
         } );
 

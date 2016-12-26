@@ -42,6 +42,8 @@ import org.pentaho.di.trans.Trans;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.repo.model.RepositoryModel;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.ui.spoon.SpoonPluginManager;
+import org.pentaho.di.ui.spoon.SpoonLifecycleListener.SpoonLifeCycleEvent;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -231,12 +233,14 @@ public class RepositoryConnectController {
     Runnable execute = () -> {
       if ( spoon.getRepository() != null ) {
         spoon.closeRepository();
+        SpoonPluginManager.getInstance().notifyLifecycleListeners( SpoonLifeCycleEvent.REPOSITORY_DISCONNECTED );
       } else {
         spoon.closeAllJobsAndTransformations( true );
       }
       spoon.setRepository( repository );
       setConnectedRepository( repositoryMeta );
       fireListeners();
+      SpoonPluginManager.getInstance().notifyLifecycleListeners( SpoonLifeCycleEvent.REPOSITORY_CONNECTED );
     };
     if ( spoon.getShell() != null ) {
       spoon.getShell().getDisplay().asyncExec( execute );
