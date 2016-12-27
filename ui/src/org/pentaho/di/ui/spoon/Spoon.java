@@ -291,6 +291,7 @@ import org.pentaho.di.ui.repository.dialog.RepositoryDialogInterface;
 import org.pentaho.di.ui.repository.dialog.RepositoryExportProgressDialog;
 import org.pentaho.di.ui.repository.dialog.RepositoryImportProgressDialog;
 import org.pentaho.di.ui.repository.dialog.RepositoryRevisionBrowserDialogInterface;
+import org.pentaho.di.ui.repository.dialog.RepositoryVfsFileChooserDialog;
 import org.pentaho.di.ui.repository.dialog.SelectDirectoryDialog;
 import org.pentaho.di.ui.repository.dialog.SelectObjectDialog;
 import org.pentaho.di.ui.repository.repositoryexplorer.RepositoryExplorer;
@@ -1041,6 +1042,9 @@ public class Spoon extends ApplicationWindow implements AddUndoPositionInterface
   public VfsFileChooserDialog getVfsFileChooserDialog( FileObject rootFile, FileObject initialFile ) {
     if ( vfsFileChooserDialog == null ) {
       vfsFileChooserDialog = new VfsFileChooserDialog( shell, new KettleVfsDelegatingResolver(), rootFile, initialFile );
+      // TODO remove this debug utility
+      RepositoryVfsFileChooserDialog repoVfsFileChooserDialog = new RepositoryVfsFileChooserDialog( vfsFileChooserDialog );
+      vfsFileChooserDialog.addVFSUIPanel( repoVfsFileChooserDialog );
     }
     vfsFileChooserDialog.setRootFile( rootFile );
     vfsFileChooserDialog.setInitialFile( initialFile );
