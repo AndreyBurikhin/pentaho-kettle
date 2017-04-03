@@ -23,6 +23,7 @@
 package org.pentaho.di.trans.steps.csvinput;
 
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.provider.local.LocalFile;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.util.Utils;
@@ -45,9 +46,13 @@ import org.pentaho.di.trans.step.StepInterface;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.di.trans.steps.textfileinput.EncodingType;
+import org.pentaho.di.trans.steps.textfileinput.TextFileInput;
+import org.pentaho.di.trans.steps.textfileinput.TextFileInputMeta;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -321,6 +326,7 @@ public class CsvInput extends BaseStep implements StepInterface {
 
       // Open the next one...
       //
+      data.fieldsMapping = createFieldMapping( data.filenames[ data.filenr ] );
       FileObject fileObject = KettleVFS.getFileObject( data.filenames[ data.filenr ], getTransMeta() );
       if ( !( fileObject instanceof LocalFile ) ) {
         // We can only use NIO on local files at the moment, so that's what we limit ourselves to.
@@ -386,6 +392,46 @@ public class CsvInput extends BaseStep implements StepInterface {
       throw e;
     } catch ( Exception e ) {
       throw new KettleException( e );
+    }
+  }
+
+  FieldsMapping createFieldMapping( String fileName ) throws KettleException {
+    String delimiter = getTransMeta().environmentSubstitute( meta.getDelimiter() );
+    String enclosure = getTransMeta().environmentSubstitute( meta.getEnclosure() );
+    String realEncoding = getTransMeta().environmentSubstitute( meta.getEncoding() );
+
+    try (FileObject fileObject = KettleVFS.getFileObject( fileName, getTransMeta() );
+        InputStream inputStream = KettleVFS.getInputStream( fileObject )) {
+
+      InputStreamReader reader;
+      if ( Utils.isEmpty( realEncoding ) ) {
+        reader = new InputStreamReader( inputStream );
+      } else {
+        reader = new InputStreamReader( inputStream, realEncoding );
+      }
+
+      EncodingType encodingType = EncodingType.guessEncodingType( reader.getEncoding() );
+      // Read a line of data to determine the number of rows...
+      //
+      String line =
+          TextFileInput.getLine( log, reader, encodingType, TextFileInputMeta.FILE_FORMAT_UNIX, new StringBuilder(
+              1000 ) );
+      // Split the string, header or data into parts...
+      //
+      String[] fieldNames = CsvInput.guessStringsFromLine( log, line, delimiter, enclosure, meta.getEscapeCharacter() );
+
+      if ( !Utils.isEmpty( meta.getEnclosure() ) ) {
+        for ( int i = 0; i < fieldNames.length; i++ ) {
+          if ( fieldNames[i].startsWith( meta.getEnclosure() ) && fieldNames[i].endsWith( meta.getEnclosure() )
+              && fieldNames[i].length() > 1 ) {
+            fieldNames[i] = fieldNames[i].substring( 1, fieldNames[i].length() - 1 );
+          }
+        }
+      }
+      return new RealNameFieldsMapping( fieldNames, meta );
+    } catch ( IOException e ) {
+      // TODO add error message
+      throw new KettleFileException( "", e );
     }
   }
 
@@ -462,7 +508,7 @@ public class CsvInput extends BaseStep implements StepInterface {
       //
       // Let's start by looking where we left off reading.
       //
-      while ( !newLineFound && outputIndex < meta.getInputFields().length ) {
+      while ( !newLineFound && outputIndex < data.fieldsMapping.size() ) {
 
         if ( data.resizeBufferIfNeeded() ) {
           // Last row was being discarded if the last item is null and
@@ -510,7 +556,7 @@ public class CsvInput extends BaseStep implements StepInterface {
           //
           if ( data.delimiterFound() ) {
             delimiterFound = true;
-          } else if ( ( !meta.isNewlinePossibleInFields() || outputIndex == meta.getInputFields().length - 1 )
+          } else if ( ( !meta.isNewlinePossibleInFields() || outputIndex == data.fieldsMapping.size() - 1 )
             && data.newLineFound() ) {
             // Perhaps we found a (pre-mature) new line?
             //
@@ -604,33 +650,37 @@ public class CsvInput extends BaseStep implements StepInterface {
           field = data.removeEscapedEnclosures( field, escapedEnclosureFound );
         }
 
-        if ( !skipRow ) {
-          if ( meta.isLazyConversionActive() ) {
-            outputRowData[ outputIndex++ ] = field;
-          } else {
-            // We're not lazy so we convert the data right here and now.
-            // The convert object uses binary storage as such we just have to ask the native type from it.
-            // That will do the actual conversion.
-            //
-            ValueMetaInterface sourceValueMeta = data.convertRowMeta.getValueMeta( outputIndex );
-            try {
-              outputRowData[ outputIndex++ ] = sourceValueMeta.convertBinaryStringToNativeType( field );
-            } catch ( KettleValueException e ) {
-              // There was a conversion error,
+        final int currentFieldIndex = outputIndex++;
+        final int actualFieldIndex = data.fieldsMapping.fieldMetaIndex( currentFieldIndex );
+        if ( actualFieldIndex > -1 ) {
+          if ( !skipRow ) {
+            if ( meta.isLazyConversionActive() ) {
+              outputRowData[actualFieldIndex] = field;
+            } else {
+              // We're not lazy so we convert the data right here and now.
+              // The convert object uses binary storage as such we just have to ask the native type from it.
+              // That will do the actual conversion.
               //
-              outputRowData[ outputIndex++ ] = null;
+              ValueMetaInterface sourceValueMeta = data.convertRowMeta.getValueMeta( actualFieldIndex );
+              try {
+                outputRowData[actualFieldIndex] = sourceValueMeta.convertBinaryStringToNativeType( field );
+              } catch ( KettleValueException e ) {
+                // There was a conversion error,
+                //
+                outputRowData[actualFieldIndex] = null;
 
-              if ( conversionExceptions == null ) {
-                conversionExceptions = new ArrayList<Exception>();
-                exceptionFields = new ArrayList<ValueMetaInterface>();
+                if ( conversionExceptions == null ) {
+                  conversionExceptions = new ArrayList<Exception>();
+                  exceptionFields = new ArrayList<ValueMetaInterface>();
+                }
+
+                conversionExceptions.add( e );
+                exceptionFields.add( sourceValueMeta );
               }
-
-              conversionExceptions.add( e );
-              exceptionFields.add( sourceValueMeta );
             }
+          } else {
+            outputRowData[actualFieldIndex] = null; // nothing for the header, no conversions here.
           }
-        } else {
-          outputRowData[ outputIndex++ ] = null; // nothing for the header, no conversions here.
         }
 
         // OK, move on to the next field...
@@ -638,13 +688,13 @@ public class CsvInput extends BaseStep implements StepInterface {
         // this will prevent the endBuffer from being incremented twice (once by this block and once in the
         // do-while loop below) and possibly skipping a newline character. This can occur if there is an
         // empty column at the end of the row (see the Jira case for details)
-        if ( ( !newLineFound && outputIndex < meta.getInputFields().length ) || ( newLineFound && doubleLineEnd ) ) {
+        if ( ( !newLineFound && outputIndex < data.fieldsMapping.size() ) || ( newLineFound && doubleLineEnd ) ) {
           int i = 0;
           while ( ( !data.newLineFound() && ( i < data.delimiter.length ) ) ) {
             data.moveEndBufferPointer();
             i++;
           }
-          if ( data.newLineFound() && outputIndex >= meta.getInputFields().length ) {
+          if ( data.newLineFound() && outputIndex >= data.fieldsMapping.size() ) {
             data.moveEndBufferPointer();
           }
           if ( doubleLineEnd && data.encodingType.getLength() > 1 ) {
