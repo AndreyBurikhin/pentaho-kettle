@@ -80,6 +80,8 @@ public class CsvInputData extends BaseStepData implements StepDataInterface {
   public PatternMatcherInterface delimiterMatcher;
   public PatternMatcherInterface enclosureMatcher;
   public CrLfMatcherInterface crLfMatcher;
+  
+  public FieldsMapping fieldsMapping;
 
   /**
    * Data class for CsvInput step
